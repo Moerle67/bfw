@@ -1,0 +1,43 @@
+﻿{% extends 'app1/base.html' %}
+{% load static %}
+{% block meta %}<meta http-equiv="refresh" content="30" />{% endblock meta %}
+{% block h1 %}Kanban PC-Klinik Stuttgart{% endblock h1 %}
+
+{% block content %}
+    <div class = "row"> 
+        <div class = "col-lg-4 order-lg-2 k2">
+            <div class="col-12 center"><h2>In Arbeit</h2></div>
+            {% for ds in liste2 %}
+                <div class="card">
+                    <div class="card-header">
+                        <p>{{ds.user}}/{{ds.bereich.slug}} - <abbr title="{{ds.beschreibung}}">{{ds.name}}</p>
+                    </div>
+                </div>
+            {% endfor %} 
+        </div>        
+        <div class = "col-lg-4 order-1 k1">
+            <div class="col-12 center"><h2>Geplant</h2></div>
+            {% for ds in liste1 %}
+                <div class="card">
+                    <div class="card-header">
+                        <p>{{ds.user}}/{{ds.bereich.slug}} - <abbr title="{{ds.beschreibung}}">{{ds.name}}</p>
+                    </div>
+                </div>
+            {% endfor %} 
+        </div>
+
+        <div class = "col-lg-4 order-3 k3">
+            <div class="col-12 center"><h2>Erledigt</h2></div>
+            {% for ds in liste3 %}
+                <div class="card">
+                    <div class="card-header">
+                        <p>{{ds.user}}/{{ds.bereich.slug}} - <abbr title="{{ds.beschreibung}}">{{ds.name}}</p>
+                    </div>
+                </div>
+            {% endfor %} 
+            </div>
+    </div>
+{% endblock content %}
+
+{% block js %}<script src="{% static 'js/bereich.js'  %}"></script>{% endblock js %}
+

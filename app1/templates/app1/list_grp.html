@@ -1,0 +1,14 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block h1 %}
+Gruppen
+{% endblock h1 %}
+
+{% block content %}
+<ol>
+    <li><a href="/pr1/grp/neu">Neuen Gruppe erfassen</a></li>
+    {% for zeile in liste %}
+        <li><a href="/pr1/grp/{{zeile.id}}"> {{ zeile }}</a></li>
+    {% endfor %}
+</ol>
+{% endblock content %}

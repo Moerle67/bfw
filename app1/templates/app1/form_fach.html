@@ -1,0 +1,23 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block content %}
+    <form method="POST">
+    {% csrf_token %}
+        <div class="form-group">
+                <label for="Bezeichnung">Bezeichnung</label>
+                <input type="text" class="form-control" id="bezeichnung" value="{% block bezeichnung %}
+                {{bezeichnung}}{% endblock bezeichnung %}" name="bezeichnung" required>
+        </div>
+        <div class="form-group">
+            <label for="slug">Slug</label>
+            <input type="text" class="form-control" id="slug" maxlength="10" name="slug" value="{% block slug %}
+            {{slug}}{% endblock slug %}" required {% block slugro %}{% endblock slugro %}>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" name="button" value="save">Speichern</button>
+            <button type="submit" class="btn btn-primary" name="button" value="abbruch" formnovalidate>Abbrechen</button>
+            {% block zusatzbutton %}
+            {% endblock zusatzbutton %}
+        </div>
+    </form>
+{% endblock content %}

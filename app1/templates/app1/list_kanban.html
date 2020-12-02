@@ -1,0 +1,57 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block h1 %}
+Kanban
+{% endblock h1 %}
+
+{% block content %}
+    <div class="row">
+        <div class = "col-lg-4 k1">
+            <div class="col-12 center"><h2>Geplant</h2></div>
+            <div class="card border-success raw">
+                <a href="/pr1/kanban/neu">Neues Projekt erfassen</a>
+            </div>
+            {% for ds in liste1 %}
+                <div class="card">
+                    <div class="card-header">
+                        <a href="/pr1/kanban/{{ds.id}}"><abbr title="{{ds.beschreibung}}">{{ds.name}}/{{ds.bereich.slug}} ({{ds.prio}})</a>
+                    </div>
+                    <div class="col-3 offset-9">
+                        <a href="/pr1/kanban/{{ds.id}}/2" ><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-right"></i></button></a>
+                    </div>
+                </div>
+            {% endfor %} 
+        </div>
+        <div class = "col-lg-4 k2">
+            <div class="col-12 center"><h2>Aktuell</h2></div>
+            {% for ds in liste2 %}
+                <div class="card">
+                   <div class="row">
+                        <div class="col-3">
+                            <a href="/pr1/kanban/{{ds.id}}/1"><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-left"></i></button></a>
+                        </div>
+                        <div class="card-header col-6">
+                            <a href="/pr1/kanban/{{ds.id}}"><abbr title="{{ds.beschreibung}}">{{ds.name}}/{{ds.bereich.slug}} ({{ds.prio}})</abbr></a>
+                        </div>
+                            <div class="col-3 rechts">
+                            <a href="/pr1/kanban/{{ds.id}}/3"><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-right"></i></button></a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %} 
+        </div>
+        <div class = "col-lg-4 k3">
+            <div class="col-12 center"><h2>Erledigt</h2></div>
+            {% for ds in liste3 %}
+                <div class="card">
+                    <div class="card-header">
+                        <a href="/pr1/kanban/{{ds.id}}">{{ds.name}}/{{ds.bereich.slug}} ({{ds.prio}})</a>
+                    </div>
+                    <div class="col-3 ">
+                        <a href="/pr1/kanban/{{ds.id}}/2"><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-left"></i></button></a>
+                    </div>
+                </div>
+            {% endfor %} 
+        </div>
+    </div>
+{% endblock content %}

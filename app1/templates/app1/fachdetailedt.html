@@ -1,0 +1,19 @@
+﻿{% extends 'app1/form_fach.html' %}
+
+{% block title %}
+    Fach Detail - {{fach.slug}}
+{% endblock title %}
+
+{% block h1 %}
+    Fach Detail - {{ fach.slug }}
+{% endblock h1 %}
+
+
+{% block bezeichnung %}{{fach.name}}{% endblock bezeichnung %}
+{% block slug %}{{fach.slug}}{% endblock slug %}
+
+{% block zusatzbutton %}
+    <button type="submit" class="btn btn-danger" name="button" value="remove" formnovalidate>LÖSCHEN</button>
+{% endblock zusatzbutton %}
+
+{% block slugro %} readonly {% endblock slugro %}

@@ -1,0 +1,12 @@
+{% extends 'app1/base.html' %}
+
+{% block h1 %}Erfasse Ausbildungsberuf{% endblock h1 %}
+{% block content %}
+    <form method="POST">
+    {% csrf_token %}
+        {% for form in forms %}
+        {{ form | safe }}
+        {% endfor %}
+    
+    </form>
+{% endblock content %}

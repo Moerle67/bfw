@@ -1,0 +1,12 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block title%}{% block h1 %}Ausbilungsfächer{% endblock h1%}{% endblock title%}
+
+{% block content %}
+<ol>
+    <li><a href="/pr1/fach/neu">Neues Fach erfassen</a></li>
+    {% for zeile in liste %}
+        <li><a href="/pr1/fach/{{zeile.slug}}"> {{ zeile }}</a></li>
+    {% endfor %}
+</ol>
+{% endblock content %}

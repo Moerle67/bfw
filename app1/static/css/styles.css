@@ -1,0 +1,25 @@
+﻿.k1 {
+    background-color: rgb(209, 222, 223);
+}
+
+.k2 {
+    background-color: aquamarine;
+}
+.k3 {background-color: azure;}
+
+.card {
+    margin: 0.5em;
+}
+
+.center {
+    text-align: center;
+}
+
+.rechts {
+    text-align: right;
+}
+
+.BereichBtn {
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+}

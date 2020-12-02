@@ -1,0 +1,22 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block h1 %}
+Teilnehmer
+{% endblock h1 %}
+
+{% block content %}
+{% if gruppe %}
+    <div class="row">
+        <a href="/pr1/tn/" class="BereichBtn"> <button type="button" class="btn btn-outline-primary">Alles</button> </a>
+        {% for item in gruppe %}
+            <a href="/pr1/tn/lst/{{item.id}}" class="BereichBtn"> <button type="button" class="btn btn-outline-primary" {% if gruppe_id == item.id %} disabled {% endif%}>{{item.name}}</button> </a>
+        {% endfor %}
+    </div>
+{% endif %}
+<ol>
+    <li><a href="/pr1/tn/neu">Neuen Teilnehmer erfassen</a></li>
+    {% for zeile in liste %}
+        <li><a href="/pr1/tn/{{zeile.id}}"> {{ zeile }}</a></li>
+    {% endfor %}
+</ol>
+{% endblock content %}

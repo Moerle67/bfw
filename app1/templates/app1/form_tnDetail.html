@@ -1,0 +1,12 @@
+{% extends 'app1/base_form.html' %}
+{% load tz %}
+{% block zusatz %} 
+{% timezone "Europe/Berlin" %}
+<ul>                       
+{% for zeile in komments %}
+    <li>{{zeile.user.username}}, {{zeile.zeitpunkt}}, {{zeile.info}}</li>
+{% endfor %}
+</ul>
+{% endtimezone %}
+
+{% endblock zusatz %} 
