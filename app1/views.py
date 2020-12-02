@@ -479,3 +479,10 @@ def kanbanOnNeu(request):
             ds = KanbanBereiche(name=name, slug=slug, beschreibung=kommentar)
             ds.save()
         return redirect("/pr1/kanban/neu?name="+fname+"&beschreibung="+beschreibung)
+
+@permission_required('app1.view_teilnehmer')
+def projekte(request):
+    listGruppe = FormAuswahl("Gruppe", Gruppe)
+    listFach = FormAuswahl("Fach", Fach)
+    form = (formZeile(listFach, listGruppe), BtnSave)
+    return render(request, 'app1/base_form.html', {'forms': form, 'h1': "Projekte", 'message': "message", 'modals': ("modalKanbanZusatz.html",)})

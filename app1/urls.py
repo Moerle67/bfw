@@ -31,6 +31,8 @@ urlpatterns = [
     path('kanban/all/', views.kanbanAll, name="kanbanAll"),
     path('kanban/onNeu/', views.kanbanOnNeu, name = "kanbanOnNeu"),
     path('kanban/pck/', views.kanbanPck, name = "kanbanPcKlinik"),
+
+    path('projekte/', views.projekte, name = 'projekte')
     # ex: /polls/5/
     # path('<int:question_id>/', views.detail, name='detail'),
     # ex: /polls/5/results/
