@@ -16,7 +16,6 @@ from .classForm import *
 
 from .models import *
 
-
 @permission_required('app1.view_teilnehmer')
 def startAllg(request):
     print(request.user.id)
