@@ -32,7 +32,9 @@ urlpatterns = [
     path('kanban/onNeu/', views.kanbanOnNeu, name = "kanbanOnNeu"),
     path('kanban/pck/', views.kanbanPck, name = "kanbanPcKlinik"),
 
-    path('projekte/', views.projekte, name = 'projekte')
+    path('projekte/neu/', views.projekteNeu, name = 'projekteNeu'),
+    path('projekt/<int:p_id>/', views.projekt, name = 'projekt'),
+    path('projekte/', views.projekteAllg, name = 'projekteAllg'),
     # ex: /polls/5/
     # path('<int:question_id>/', views.detail, name='detail'),
     # ex: /polls/5/results/

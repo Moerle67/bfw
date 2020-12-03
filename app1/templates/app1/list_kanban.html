@@ -17,7 +17,7 @@ Kanban
                         <a href="/pr1/kanban/{{ds.id}}"><abbr title="{{ds.beschreibung}}">{{ds.name}}/{{ds.bereich.slug}} ({{ds.prio}})</a>
                     </div>
                     <div class="col-3 offset-9">
-                        <a href="/pr1/kanban/{{ds.id}}/2" ><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-right"></i></button></a>
+                        <a href="/pr1/kanban/{{ds.id}}/2" ><button type="button" class="btn btn-link" onclick="prompt"><i class="fas fa-arrow-right"></i></button></a>
                     </div>
                 </div>
             {% endfor %} 
@@ -28,13 +28,13 @@ Kanban
                 <div class="card">
                    <div class="row">
                         <div class="col-3">
-                            <a href="/pr1/kanban/{{ds.id}}/1"><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-left"></i></button></a>
+                            <a href="/pr1/kanban/{{ds.id}}/1"><button type="button" class="btn btn-link" onclick="prompt"><i class="fas fa-arrow-left"></i></button></a>
                         </div>
                         <div class="card-header col-6">
                             <a href="/pr1/kanban/{{ds.id}}"><abbr title="{{ds.beschreibung}}">{{ds.name}}/{{ds.bereich.slug}} ({{ds.prio}})</abbr></a>
                         </div>
                             <div class="col-3 rechts">
-                            <a href="/pr1/kanban/{{ds.id}}/3"><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-right"></i></button></a>
+                            <a href="/pr1/kanban/{{ds.id}}/3"><button type="button" class="btn btn-link" onclick="prompt"><i class="fas fa-arrow-right"></i></button></a>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@ Kanban
                         <a href="/pr1/kanban/{{ds.id}}">{{ds.name}}/{{ds.bereich.slug}} ({{ds.prio}})</a>
                     </div>
                     <div class="col-3 ">
-                        <a href="/pr1/kanban/{{ds.id}}/2"><button type="button" class="btn btn-outline-primary" onclick="prompt"><i class="fas fa-arrow-left"></i></button></a>
+                        <a href="/pr1/kanban/{{ds.id}}/2"><button type="button" class="btn btn-link" onclick="prompt"><i class="fas fa-arrow-left"></i></button></a>
                     </div>
                 </div>
             {% endfor %} 

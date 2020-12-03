@@ -50,23 +50,6 @@ class TnInfo(models.Model):
     def __str__(self):
         return str(self.user.username)+", "+str(self.zeitpunkt)+", "+self.info
 
-class Project(models.Model):
-    name = models.CharField(max_length=50)
-    aktiv = models.BooleanField(default=True)
-    timeStart = models.DateTimeField(auto_now=False, auto_now_add=False)
-    timeEnde = models.DateTimeField(auto_now=False, auto_now_add=False)
-    def __str__(self):
-        return self.name
-
-class Bewertung(models.Model):
-    teilnehmer = models.ForeignKey(Teilnehmer, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    abgabe = models.DateTimeField(auto_now=False, auto_now_add=False)
-    bewertung = models.IntegerField(blank=True)
-    kommentar = models.TextField(blank=True)
-    aktiv = models.BooleanField(default=True)
-    def __str__(self):
-        return self.project+"/"+self.teilnehmer
 
 class KanbanBereiche(models.Model):
     name = models.CharField(max_length=50)
@@ -100,3 +83,23 @@ class KanbanProtokoll(models.Model):
     def __str__(self):
         return self.project.name + " ("+self.stufeNeu+") "+str(self.zeitpunkt)+" - "+self.kommentar
 
+class Projekt(models.Model):
+    bezeichnung = models.CharField(max_length=100)
+    fach = models.ForeignKey(Fach,  on_delete=models.CASCADE)
+    gruppe = models.ForeignKey(Gruppe, on_delete=models.CASCADE)
+    start = models.DateTimeField(auto_now=False, auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username+", "+self.fach.slug+", "+self.gruppe.name+", "+str(self.start)+", "+self.bezeichnung
+
+class ProjekteTN(models.Model):
+    teilnehmer = models.ForeignKey(Teilnehmer, on_delete=models.CASCADE)
+    projekt = models.ForeignKey(Projekt, on_delete=models.CASCADE)
+    bis = models.DateTimeField(auto_now=False, auto_now_add=False)
+    abgabe = models.DateTimeField(auto_now=False, auto_now_add=True)
+    bewertung = models.IntegerField(default=0)
+    kommentar = models.CharField(max_length=100, default="")
+    offen = models.BooleanField(default=True)
+    def __str__(self):
+        return self.teilnehmer.name+", "+self.projekt.bezeichnung

@@ -1,6 +1,6 @@
 import datetime
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import permission_required
@@ -48,10 +48,10 @@ def auth(request):
     fpassword = FormInput("Kennwort", type='password')
     fpwneu1 = FormInput("Kennwort neu", type='password', required=False)
     fpwneu2 = FormInput("Kennwort bestätigen", type='password', required=False)
-    btnNew = Btn("Neues Kennwort", "new")
-    btnAbmelden = Btn("Abmelden", "logout", color="danger")
+    btnNew = FormBtn("Neues Kennwort", "new")
+    btnAbmelden = FormBtn("Abmelden", "logout", color="danger")
     forms = (formZeile(fname, fpassword), formZeile(fpwneu1, fpwneu2),
-             "<hr />", BtnSave, BtnCancel, btnNew, btnAbmelden)
+             "<hr />", FormBtnSave, FormBtnCancel, btnNew, btnAbmelden)
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Benutzerdaten eingeben", 'message': message})
 
 def impress(request):
@@ -126,7 +126,7 @@ def ausbDetail(request, ausb_slug):
         name = FormInput("Bezeichnung", value=satz.name)
         slug = FormInput('Slug', value=satz.slug)
         slug.readonly = True
-        forms = (name, slug, BtnSave, BtnCancel, BtnRemove)
+        forms = (name, slug, FormBtnSave, FormBtnCancel, FormBtnRemove)
     else:
         if request.POST['button'] == 'cancel':
             return redirect("/pr1/ausb")
@@ -165,7 +165,7 @@ def ausbNeu(request):
             return redirect("/pr1/ausb")
     name = FormInput("Bezeichnung", value=name)
     slug = FormInput("Slug", value=slug)
-    forms = (name, slug, BtnSave, BtnCancel)
+    forms = (name, slug, FormBtnSave, FormBtnCancel)
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Neu erfassen", 'message': message})
 
 
@@ -231,9 +231,9 @@ def tnDetail(request, tn_id):
     gruppe = FormAuswahl("Gruppe", Gruppe, value=vgruppe)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
     komment = FormInput("Kommentar")
-    btnKomm = Btn("Kommentar speichern", "comment")
+    btnKomm = FormBtn("Kommentar speichern", "comment")
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
-             "<hr />", BtnSave, BtnCancel,"<hr />", komment, "<hr />", btnKomm)
+             "<hr />", FormBtnSave, FormBtnCancel, formLinie, komment, formLinie, btnKomm)
 
     return render(request, 'app1/form_tnDetail.html', {'forms': forms, 'h1': "Teilnehmerinfo", 'message': message, 
     "komments": komments })
@@ -260,8 +260,8 @@ def tnNeu(request):
         elif request.POST['button'] == 'mail':
             mail_cut=vemail.split("@")
             mail_cut=mail_cut[0].split(".")
-            vname = mail_cut[1]
-            vvorname = mail_cut[0]
+            vname = mail_cut[1].capitalize()
+            vvorname = mail_cut[0].capitalize()
         else:
             iausbildung = Ausbildung.objects.get(id=vausbildung)
             ds = Teilnehmer(name=vname,
@@ -278,9 +278,9 @@ def tnNeu(request):
     email = FormInput("Email", type="mail", value=vemail)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
     gruppe = FormAuswahl("Gruppe", Gruppe, value=sgruppe)
-    btnUeber = Btn("Mail übertragen","mail", formnovalidate=True)
+    btnUeber = FormBtn("Mail übertragen","mail", formnovalidate=True)
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
-             "<hr />", BtnSave, BtnNext, BtnCancel, btnUeber)
+             "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel, btnUeber)
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Teilnehmer erfassen", 'message': message})
 
 
@@ -310,7 +310,7 @@ def grpNeu(request):
                 return redirect("/pr1/grp/neu")
     name = FormInput("Name", value=vname)
     forms = (name, 
-             "<hr />", BtnSave, BtnNext, BtnCancel)
+             "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel)
 
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Gruppe erfassen", 'message': message})
 
@@ -338,7 +338,7 @@ def grpDetail(request, grp_id):
                 return redirect("/pr1/grp")
     name = FormInput("Name", value=vname)
     forms = (name, 
-             "<hr />", BtnSave, BtnCancel, BtnRemove)
+             "<hr />", FormBtnSave, FormBtnCancel, FormBtnRemove)
 
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Gruppe bearbeiten", 'message': message})
 
@@ -365,13 +365,13 @@ def kanbanNeu(request):
             vname = ""
             vkommentar = ""
         auswahlBereich = FormAuswahl('Bereich', KanbanBereiche)
-        btnNeu = Btn("Neuer Bereich", "newBer",
+        btnNeu = FormBtn("Neuer Bereich", "newBer",
                      modal="kanbanZusatzModal", type="button")
         name = FormInput("Name", value=vname)
         prio = FormSlider("Priorität", value=5)
         kommentar = FormInput("Kommentar", value=vkommentar)
         forms = (formZeile(name, auswahlBereich), formZeile(kommentar, prio),
-                 '<hr />', BtnSave, BtnCancel, btnNeu,)
+                 '<hr />', FormBtnSave, FormBtnCancel, btnNeu,)
         return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Projekt erstellen", 'message': message, 'modals': ("modalKanbanZusatz.html",)})
     else:
         if request.POST['button'] == 'cancel':
@@ -398,7 +398,7 @@ def kanbanEdt(request, id):
         kommentar = FormInput("Kommentar", value=ds.beschreibung)
         auswahlBereich = FormAuswahl('Bereich', KanbanBereiche, value=ds.bereich)
         prio = FormSlider("Priorität", value=ds.prio)        
-        forms = (formZeile(name,auswahlBereich), formZeile(kommentar, prio), '<hr />', BtnSave, BtnCancel, BtnRemove)
+        forms = (formZeile(name,auswahlBereich), formZeile(kommentar, prio), '<hr />', FormBtnSave, FormBtnCancel, FormBtnRemove)
         return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Projekt ändern", 'message': message})
     else:
         ds = KanbanProject.objects.get(id=id, user=request.user)
@@ -433,6 +433,7 @@ def kanbanPck(request):
         liste2 = KanbanProject.objects.filter(stufe=2, aktiv=True, bereich__slug="PCK").order_by('-prio')
         liste3 = KanbanProject.objects.filter(stufe=3, aktiv=True, bereich__slug="PCK").order_by('-prio')
         return render(request, 'app1/list_kanbanPck.html', {'liste1': liste1, 'liste2': liste2, 'liste3': liste3, })
+
 @permission_required('app1.view_teilnehmer')
 def kanbanAll(request):
     bereich = ""
@@ -480,9 +481,89 @@ def kanbanOnNeu(request):
             ds.save()
         return redirect("/pr1/kanban/neu?name="+fname+"&beschreibung="+beschreibung)
 
+def getTimeDiff(eingabe):
+    timeListe = eingabe.strip().split()
+    stunden = minuten = tage = wochen = monate = 0
+    for i in range(1,len(timeListe),2):
+        if timeListe[i].upper() == "MINUTEN":
+            minuten = int(timeListe[i-1])
+        elif timeListe[i].upper() == "MINUTE":
+            minuten = int(timeListe[i-1])
+        elif timeListe[i].upper() == "STUNDE":
+            stunden = int(timeListe[i-1])
+        elif timeListe[i].upper() == "STUNDEN":
+            stunden = int(timeListe[i-1])
+        elif timeListe[i].upper() == "TAGE":
+            tage = int(timeListe[i-1])
+        elif timeListe[i].upper() == "TAG":
+            tage = int(timeListe[i-1])
+        elif timeListe[i].upper() == "WOCHE":
+            wochen = int(timeListe[i-1])
+        elif timeListe[i].upper() == "WOCHEN":
+            wochen = int(timeListe[i-1])
+    diff = timedelta(minutes=minuten, hours=stunden, days=tage, weeks=wochen)
+    return diff  
+
 @permission_required('app1.view_teilnehmer')
-def projekte(request):
-    listGruppe = FormAuswahl("Gruppe", Gruppe)
-    listFach = FormAuswahl("Fach", Fach)
-    form = (formZeile(listFach, listGruppe), BtnSave)
-    return render(request, 'app1/base_form.html', {'forms': form, 'h1': "Projekte", 'message': "message", 'modals': ("modalKanbanZusatz.html",)})
+def projekteNeu(request):
+    if request.method == "GET":
+        message = ""
+        listGruppe = FormAuswahl("Gruppe", Gruppe)
+        listFach = FormAuswahl("Fach", Fach)
+        bezeichnung = FormInput("Bezeichnung")
+        dauer = FormInput("Dauer")
+        form = (formZeile(listFach, listGruppe), formLinie, formZeile(bezeichnung, dauer), formLinie, FormBtnSave, FormBtnCancel)
+        return render(request, 'app1/base_form.html', {'forms': form, 'h1': "Projekte", "message": message})
+    else :
+        gruppe = Gruppe.objects.get(pk=int(request.POST["Gruppe"]))
+        fach = Fach.objects.get(pk=int(request.POST["Fach"]))
+        bezeichnung = request.POST["Bezeichnung"]
+        ds_projekt = Projekt(gruppe=gruppe, fach=fach, bezeichnung=bezeichnung, user=request.user)
+        ds_projekt.save()
+        dauer = request.POST['Dauer']
+        td = getTimeDiff(dauer)
+        bis = now()+td
+        teilnehmerListe = Teilnehmer.objects.filter(gruppe=gruppe, aktiv=True)
+        # print(teilnehmerListe)
+        for teilnehmer in teilnehmerListe:
+            ds_projektTn = ProjekteTN(
+                teilnehmer = teilnehmer,
+                projekt = ds_projekt,
+                bis = bis
+            )
+            ds_projektTn.save()
+        return redirect("/pr1/projekt/"+str(ds_projekt.pk))
+
+@permission_required('app1.view_teilnehmer')
+def projekt(request, p_id):
+    if request.method == "POST":
+        liste_k = list(request.POST.keys())
+        liste_v = list(request.POST.values())
+        print(liste_v)
+        print(liste_k)
+        if "Abgabe" in liste_v:
+            projekt = liste_k[liste_v.index("Abgabe")]
+
+            ds_projektTN=ProjekteTN.objects.get(pk=int(projekt))
+            ds_projektTN.offen=False
+            ds_projektTN.kommentar = request.POST["text_"+str(projekt)]
+            ds_projektTN.abgabe = now()
+            ds_projektTN.save()
+        #print(request.POST.values.index("Abgabe"))
+    projekt = Projekt.objects.get(id=int(p_id))
+    max = len(ProjekteTN.objects.filter(projekt=projekt))
+    fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
+    anteil = round(fertig*100/max,1)
+    tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen")
+    return render(request, 'app1/list_projekt.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil })
+
+@permission_required('app1.view_teilnehmer')
+def projekteAllg(request):
+    listeProjekte = Projekt.objects.filter().order_by("-start")
+    liste = []
+    for projekt in listeProjekte:
+        max = len(ProjekteTN.objects.filter(projekt=projekt))
+        fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
+        anteil = round(fertig*100/max,1)
+        liste.append((projekt, anteil))
+    return render(request, 'app1/projektallg.html', {"liste": liste})

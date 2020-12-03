@@ -1,0 +1,22 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block h1 %}
+Projekt: {{projekt.fach.slug}}/{{ projekt.bezeichnung }} ({{anteil}} %)
+{% endblock h1 %}
+
+{% block content %}
+<br />
+<br />
+<ul>
+    <form method="POST">
+    {% csrf_token %}
+    {% for zeile in liste %}
+        {% if zeile.offen %}
+            <li><input type="text" name="text_{{zeile.id}}"> <input type="submit" value="Abgabe" name="{{zeile.id}}"> {{zeile.teilnehmer.name}},{{zeile.teilnehmer.vorname}} </li>
+        {% else %}
+            <li>{{zeile.teilnehmer.name}}, {{zeile.abgabe}}, {{zeile.kommentar}} </li>
+        {% endif %}
+    {% endfor %}
+    </form>
+</ul>
+{% endblock content %}

@@ -46,7 +46,7 @@ class FormSlider:
         antwort += '>\n'
         return antwort
 
-class Btn:
+class FormBtn:
     name = ""
     label = ""
     color = ""
@@ -78,7 +78,7 @@ class Btn:
         antwort +=  '</button>'
         return antwort
 
-class BtnSave:
+class FormBtnSave:
     name = "Speichern"
     def __str__(self):
         antwort ='<button type="submit" class="btn btn-primary" name="button" value="save">'
@@ -86,15 +86,15 @@ class BtnSave:
         antwort +=  '</button>'
         return antwort
         
-class BtnCancel:
+class FormBtnCancel:
     name = "Abbruch"
     def __str__(self):
-        antwort ='<button type="submit" class="btn btn-primary" name="button" value="cancel" formnovalidate>'
+        antwort ='<button type="submit" class="btn btn-danger" name="button" value="cancel" formnovalidate>'
         antwort +=  self.name
         antwort +=  '</button>'
         return antwort
 
-class BtnNext:
+class FormBtnNext:
     name = "Speichern und Nächster"
     def __str__(self):
         antwort ='<button type="submit" class="btn btn-primary" name="button" value="next">'
@@ -102,7 +102,7 @@ class BtnNext:
         antwort +=  '</button>'
         return antwort
 
-class BtnRemove:
+class FormBtnRemove:
     name = "Löschen"
     def __str__(self):
         antwort ='<button type="submit" class="btn btn-danger" name="button" value="remove" formnovalidate>'
@@ -140,3 +140,6 @@ def formZeile(*liste):
         antwort += '</div>'
     antwort += '\n</div>'
     return antwort
+
+def formLinie():
+    return "<hr />"
