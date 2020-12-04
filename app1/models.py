@@ -9,7 +9,7 @@ class Ausbildung(models.Model):
         return self.slug+" - "+self.name
     class Meta:
         ordering = ['slug']
-    
+        verbose_name_plural = "Ausbildungen"
 
 class Fach(models.Model):
     name = models.CharField(max_length=50)
@@ -19,6 +19,7 @@ class Fach(models.Model):
         return self.slug+" - "+self.name
     class Meta:
         ordering = ['slug']
+        verbose_name_plural = "Fächer"
 
 class Gruppe(models.Model):
     name = models.CharField(max_length=50)
@@ -27,6 +28,7 @@ class Gruppe(models.Model):
         return self.name
     class Meta:
         ordering = ['name']
+        verbose_name_plural = "Gruppen"
 
 class Teilnehmer(models.Model):
     name = models.CharField(max_length=50)
@@ -40,7 +42,8 @@ class Teilnehmer(models.Model):
         return self.name+", "+self.vorname+" - "+self.ausbildung.slug+" / "+str(self.gruppe)
     class Meta:
         ordering = ['name']
-        
+        verbose_name_plural = "Teilnehmer"
+
 class TnInfo(models.Model):
     tn = models.ForeignKey(Teilnehmer, on_delete=models.CASCADE)
     zeitpunkt = models.DateTimeField(auto_now=False, auto_now_add=True)
