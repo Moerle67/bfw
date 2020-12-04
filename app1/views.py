@@ -555,7 +555,7 @@ def projekt(request, p_id):
     fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
     anteil = round(fertig*100/max,1)
     tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen")
-    return render(request, 'app1/list_projekt.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil })
+    return render(request, 'app1/projekt_list.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil })
 
 @permission_required('app1.view_teilnehmer')
 def projekteAllg(request):
@@ -566,4 +566,13 @@ def projekteAllg(request):
         fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
         anteil = round(fertig*100/max,1)
         liste.append((projekt, anteil))
-    return render(request, 'app1/projektallg.html', {"liste": liste})
+    return render(request, 'app1/projekt_allg.html', {"liste": liste})
+
+@permission_required('app1.view_teilnehmer')
+def projekteTNDetail(request, ptn_id):
+    ds = ProjekteTN.objects.get(pk=ptn_id)
+    teilnehmer = FormInput("Teilnehmer",value=str(ds.teilnehmer), disabled=True)
+    fach = FormInput("Fach", value=ds.projekt.fach.name, disabled=True)
+    form = (formZeile(teilnehmer,fach),)
+    return render(request, 'app1/base_form.html', {"h1": "Details Projekt TN", "forms": form, })
+

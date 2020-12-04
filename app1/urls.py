@@ -35,6 +35,7 @@ urlpatterns = [
     path('projekte/neu/', views.projekteNeu, name = 'projekteNeu'),
     path('projekt/<int:p_id>/', views.projekt, name = 'projekt'),
     path('projekte/', views.projekteAllg, name = 'projekteAllg'),
+    path('projekte/tndetail/<int:ptn_id>', views.projekteTNDetail, name = 'projekteAllg'),
     # ex: /polls/5/
     # path('<int:question_id>/', views.detail, name='detail'),
     # ex: /polls/5/results/

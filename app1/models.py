@@ -52,6 +52,8 @@ class TnInfo(models.Model):
     aktiv = models.BooleanField(default=True)
     def __str__(self):
         return str(self.user.username)+", "+str(self.zeitpunkt)+", "+self.info
+    class Meta:
+        verbose_name_plural = "Teilnehmer Infos"
 
 
 class KanbanBereiche(models.Model):
@@ -61,6 +63,8 @@ class KanbanBereiche(models.Model):
     aktiv = models.BooleanField(default=True)
     def __str__(self):
         return self.name + "/" + self.slug
+    class Meta:
+        verbose_name_plural = "Kanban Bereiche"
 
 class KanbanProject(models.Model):
     name = models.CharField(max_length=50)
@@ -77,6 +81,8 @@ class KanbanProject(models.Model):
         permissions = [
             ("show_all", "Kann alle Projekte sehen"),
         ]
+    class Meta:
+        verbose_name_plural = "Kanban Projekte"
 
 class KanbanProtokoll(models.Model):
     kommentar = models.TextField()
@@ -85,6 +91,8 @@ class KanbanProtokoll(models.Model):
     project = models.ForeignKey(KanbanProject, on_delete=models.CASCADE)
     def __str__(self):
         return self.project.name + " ("+self.stufeNeu+") "+str(self.zeitpunkt)+" - "+self.kommentar
+    class Meta:
+        verbose_name_plural = "Kanban Protokolle"
 
 class Projekt(models.Model):
     bezeichnung = models.CharField(max_length=100)
@@ -95,6 +103,8 @@ class Projekt(models.Model):
 
     def __str__(self):
         return self.user.username+", "+self.fach.slug+", "+self.gruppe.name+", "+str(self.start)+", "+self.bezeichnung
+    class Meta:
+        verbose_name_plural = "Projekte"
 
 class ProjekteTN(models.Model):
     teilnehmer = models.ForeignKey(Teilnehmer, on_delete=models.CASCADE)
@@ -106,3 +116,5 @@ class ProjekteTN(models.Model):
     offen = models.BooleanField(default=True)
     def __str__(self):
         return self.teilnehmer.name+", "+self.projekt.bezeichnung
+    class Meta:
+        verbose_name_plural = "Projekte Teilnehmer"

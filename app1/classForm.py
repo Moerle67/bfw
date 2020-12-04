@@ -3,12 +3,14 @@ class FormInput:
     type = ""
     required = True
     readonly = False
-
-    def __init__(self, label, value="", type="text", required = "True"):
+    disabled = False
+    def __init__(self, label, value="", type="text", required = "True", disabled=False):
         self.label = label
         self.value = value
         self.type = type
         self.required = required
+        self.disabled = disabled
+
     def __str__(self):
         antwort = '<label for="'+self.label+'">'+self.label+'</label>\n'
         antwort += '<input type="'+self.type+'" class="form-control" id="'+self.label+'" value="'+self.value
@@ -17,6 +19,8 @@ class FormInput:
             antwort += " required"
         if self.readonly:
             antwort += " readonly"
+        if self.disabled:
+            antwort += " disabled"
         antwort += '>\n'
         return antwort
 
