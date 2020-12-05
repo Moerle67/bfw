@@ -571,8 +571,19 @@ def projekteAllg(request):
 @permission_required('app1.view_teilnehmer')
 def projekteTNDetail(request, ptn_id):
     ds = ProjekteTN.objects.get(pk=ptn_id)
-    teilnehmer = FormInput("Teilnehmer",value=str(ds.teilnehmer), disabled=True)
-    fach = FormInput("Fach", value=ds.projekt.fach.name, disabled=True)
-    form = (formZeile(teilnehmer,fach),)
-    return render(request, 'app1/base_form.html', {"h1": "Details Projekt TN", "forms": form, })
+    if request.method == "GET":
+        ds = ProjekteTN.objects.get(pk=ptn_id)
+        teilnehmer = FormInput("Teilnehmer",value=str(ds.teilnehmer), disabled=True)
+        fach = FormInput("Fach", value=ds.projekt.fach.name, disabled=True)
+        kommentar = FormInput("Kommentar", value=ds.kommentar)
+        bewertung = FormSlider("Bewertung", value=ds.bewertung, min=1, max=6)
+        form = (formZeile(teilnehmer,fach),formZeile(kommentar, bewertung),formLinie,FormBtnSave,FormBtnCancel)
+        return render(request, 'app1/base_form.html', {"h1": "Details Projekt TN", "forms": form, })
+    elif request.POST["button"] == "save":
+        kommentar = request.POST["Kommentar"]
+        bewertung = int(request.POST["Bewertung"])
+        ds.kommentar = kommentar
+        ds.bewertung = bewertung
+        ds.save()
+        return redirect("/pr1/projekt/"+str(ds.projekt.id))
 

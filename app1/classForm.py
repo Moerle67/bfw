@@ -35,7 +35,7 @@ class FormSlider:
         self.label = label
         self.value = value
         self.min = min
-        self.max
+        self.max = max
         self.required = required
     def __str__(self):
         antwort = '<label for="'+self.label+'">'+self.label+'</label>\n'

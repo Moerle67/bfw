@@ -14,7 +14,7 @@ Projekt: {{projekt.fach.slug}}/{{ projekt.bezeichnung }} ({{anteil}} %)
         {% if zeile.offen %}
             <li><input type="text" name="text_{{zeile.id}}"> <input type="submit" value="Abgabe" name="{{zeile.id}}"> {{zeile.teilnehmer.name}},{{zeile.teilnehmer.vorname}}</a> </li>
         {% else %}
-            <li><a href="/pr1/projekte/tndetail/{{zeile.id}}">{{zeile.teilnehmer.name}}, {{zeile.abgabe}}, {{zeile.kommentar}} </li>
+            <li><a href="/pr1/projekte/tndetail/{{zeile.id}}">{{zeile.teilnehmer.name}}, {{zeile.abgabe}}, {{zeile.kommentar}} ({{zeile.bewertung}})</li>
         {% endif %}
     {% endfor %}
     </form>
