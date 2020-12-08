@@ -12,9 +12,9 @@ Projekt: {{projekt.fach.slug}}/{{ projekt.bezeichnung }} ({{anteil}} %)
     {% csrf_token %}
     {% for zeile in liste %}
         {% if zeile.offen %}
-            <li><input type="text" name="text_{{zeile.id}}"> <input type="submit" value="Abgabe" name="{{zeile.id}}"> {{zeile.teilnehmer.name}},{{zeile.teilnehmer.vorname}}</a> </li>
+            <li><input type="text" name="text_{{zeile.id}}"> <input type="submit" value="Abgabe" name="{{zeile.id}}"> {{zeile.teilnehmer.name}},{{zeile.teilnehmer.vorname}} - {{zeile.teilnehmer.ausbildung.slug}}</a> </li>
         {% else %}
-            <li><a href="/pr1/projekte/tndetail/{{zeile.id}}">{{zeile.teilnehmer.name}}, {{zeile.abgabe}}, {{zeile.kommentar}} ({{zeile.bewertung}})</li>
+            <li><a href="/pr1/projekte/tndetail/{{zeile.id}}">{{zeile.teilnehmer.name}}, {{zeile.abgabe}}, {{zeile.kommentar}} ({{zeile.bewertung}}) - {{zeile.teilnehmer.ausbildung.slug}}</li>
         {% endif %}
     {% endfor %}
     </form>

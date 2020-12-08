@@ -586,4 +586,4 @@ def projekteTNDetail(request, ptn_id):
         ds.bewertung = bewertung
         ds.save()
         return redirect("/pr1/projekt/"+str(ds.projekt.id))
-
+    return redirect("/pr1/projekt/"+str(ds.projekt.id))
