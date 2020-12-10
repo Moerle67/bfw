@@ -2,6 +2,7 @@
 
 {% block h1 %}
 Projekt: {{projekt.fach.slug}}/{{ projekt.bezeichnung }} ({{anteil}} %)
+<h2 id="time-source">{{ projekt.bis|date:'SHORT_DATETIME_FORMAT' }}</h2><h2 id="time-elapsed"></h2>
 {% endblock h1 %}
 
 {% block content %}
@@ -18,5 +19,13 @@ Projekt: {{projekt.fach.slug}}/{{ projekt.bezeichnung }} ({{anteil}} %)
         {% endif %}
     {% endfor %}
     </form>
+    <br />
+    <a href="/pr1/projekt/{{projekt.id}}/remove"><button type="button" class="btn btn-danger">Projekt löschen</button>
 </ul>
+
+<p style="visibility:hidden" id="hidden_year">{{datum.0}}</p>
+<p style="visibility:hidden" id="hidden_month">{{datum.1}}</p>
+<p style="visibility:hidden" id="hidden_day">{{datum.2}}</p>
+<p style="visibility:hidden" id="hidden_hour">{{datum.3}}</p>
+<p style="visibility:hidden" id="hidden_minutes">{{datum.4}}</p>
 {% endblock content %}

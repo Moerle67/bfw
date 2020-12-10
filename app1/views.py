@@ -1,16 +1,14 @@
-import datetime
-
 from datetime import datetime, timedelta
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import permission_required
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import (get_list_or_404, get_object_or_404, redirect,
                               render)
 
 from django.contrib import messages
 from django.template import loader
-from django.utils.timezone import now
+from django.utils import timezone
 
 from .classForm import *
 
@@ -222,7 +220,8 @@ def tnDetail(request, tn_id):
             ds.email = vemail
             ds.gruppe = vgruppe
             ds.save()
-            return redirect("/pr1/tn")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            #return redirect("/pr1/tn")
 
     name = FormInput("Name", value=vname)
     vorname = FormInput("Vorname", value=vvorname)
@@ -230,7 +229,7 @@ def tnDetail(request, tn_id):
     email = FormInput("Email", type="mail", value=vemail)
     gruppe = FormAuswahl("Gruppe", Gruppe, value=vgruppe)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
-    komment = FormInput("Kommentar")
+    komment = FormInput("Kommentar", required=False)
     btnKomm = FormBtn("Kommentar speichern", "comment")
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
              "<hr />", FormBtnSave, FormBtnCancel, formLinie, komment, formLinie, btnKomm)
@@ -372,7 +371,7 @@ def kanbanNeu(request):
         kommentar = FormInput("Kommentar", value=vkommentar)
         forms = (formZeile(name, auswahlBereich), formZeile(kommentar, prio),
                  '<hr />', FormBtnSave, FormBtnCancel, btnNeu,)
-        return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Projekt erstellen", 'message': message, 'modals': ("modalKanbanZusatz.html",)})
+        return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Projekt erstellen", 'message': message, 'modals': ("modalKanbanZusatz.html",), "js": ("js/eigenes.js", )})
     else:
         if request.POST['button'] == 'cancel':
             return redirect("/pr1/kanban")
@@ -489,7 +488,11 @@ def getTimeDiff(eingabe):
             minuten = int(timeListe[i-1])
         elif timeListe[i].upper() == "MINUTE":
             minuten = int(timeListe[i-1])
+        elif timeListe[i].upper() == "M":
+            minuten = int(timeListe[i-1])
         elif timeListe[i].upper() == "STUNDE":
+            stunden = int(timeListe[i-1])
+        elif timeListe[i].upper() == "H":
             stunden = int(timeListe[i-1])
         elif timeListe[i].upper() == "STUNDEN":
             stunden = int(timeListe[i-1])
@@ -518,11 +521,11 @@ def projekteNeu(request):
         gruppe = Gruppe.objects.get(pk=int(request.POST["Gruppe"]))
         fach = Fach.objects.get(pk=int(request.POST["Fach"]))
         bezeichnung = request.POST["Bezeichnung"]
-        ds_projekt = Projekt(gruppe=gruppe, fach=fach, bezeichnung=bezeichnung, user=request.user)
-        ds_projekt.save()
         dauer = request.POST['Dauer']
         td = getTimeDiff(dauer)
-        bis = now()+td
+        bis = timezone.now()+td
+        ds_projekt = Projekt(gruppe=gruppe, fach=fach, bezeichnung=bezeichnung, user=request.user, bis=bis)
+        ds_projekt.save()
         teilnehmerListe = Teilnehmer.objects.filter(gruppe=gruppe, aktiv=True)
         # print(teilnehmerListe)
         for teilnehmer in teilnehmerListe:
@@ -547,15 +550,17 @@ def projekt(request, p_id):
             ds_projektTN=ProjekteTN.objects.get(pk=int(projekt))
             ds_projektTN.offen=False
             ds_projektTN.kommentar = request.POST["text_"+str(projekt)]
-            ds_projektTN.abgabe = now()
+            ds_projektTN.abgabe = timezone.now()
             ds_projektTN.save()
         #print(request.POST.values.index("Abgabe"))
     projekt = Projekt.objects.get(id=int(p_id))
     max = len(ProjekteTN.objects.filter(projekt=projekt))
     fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
     anteil = round(fertig*100/max,1)
-    tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen")
-    return render(request, 'app1/projekt_list.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil })
+    bis = timezone.localtime(projekt.bis)
+    datum = (bis.year, bis.month, bis.day, bis.hour, bis.minute)
+    tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen", "teilnehmer")
+    return render(request, 'app1/projekt_list.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil, "js": ("js/timer.js",), "datum": datum, })
 
 @permission_required('app1.view_teilnehmer')
 def projekteAllg(request):
@@ -566,7 +571,7 @@ def projekteAllg(request):
         fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
         anteil = round(fertig*100/max,1)
         liste.append((projekt, anteil))
-    return render(request, 'app1/projekt_allg.html', {"liste": liste})
+    return render(request, 'app1/projekt_allg.html', {"liste": liste, })
 
 @permission_required('app1.view_teilnehmer')
 def projekteTNDetail(request, ptn_id):
@@ -587,3 +592,21 @@ def projekteTNDetail(request, ptn_id):
         ds.save()
         return redirect("/pr1/projekt/"+str(ds.projekt.id))
     return redirect("/pr1/projekt/"+str(ds.projekt.id))
+
+@permission_required('app1.view_teilnehmer')
+def projekteRemove(request,project_id):
+    ds = Projekt.objects.get(id=project_id)
+    if request.method == "GET":
+        question = FormInput("Wirklich?", "Projekt wirklich löschen?", readonly=True)
+        name = FormInput("Bezeichnung", value=ds.bezeichnung, readonly=True)
+        user = FormInput("User", value=str(ds.user), readonly=True)
+        fach = FormInput("Fach", value=str(ds.fach), readonly=True)
+        forms =(question, name, formZeile(user, fach), formLinie, FormBtnOk, FormBtnCancel)
+        return render(request, 'app1/base_form.html', {"h1": "Projekt löschen", "forms": forms, })
+    elif request.POST["button"]=="ok":
+        print("Löschen")
+        ds.delete()
+        return redirect("/pr1/projekte/")
+    else:
+        return redirect("/pr1/projekte/")
+

@@ -4,12 +4,13 @@ class FormInput:
     required = True
     readonly = False
     disabled = False
-    def __init__(self, label, value="", type="text", required = "True", disabled=False):
+    def __init__(self, label, value="", type="text", required = "True", disabled=False, readonly=False):
         self.label = label
         self.value = value
         self.type = type
         self.required = required
         self.disabled = disabled
+        self.readonly = readonly
 
     def __str__(self):
         antwort = '<label for="'+self.label+'">'+self.label+'</label>\n'
@@ -30,24 +31,56 @@ class FormSlider:
     max = 10
     required = True
     readonly = False
+    marks = True
 
-    def __init__(self, label, value="0", required = "True", min=0, max=10):
+    def __init__(self, label, value="0", required = "True", min=0, max=10, marks = True):
         self.label = label
         self.value = value
         self.min = min
         self.max = max
         self.required = required
+        self.marks = marks
     def __str__(self):
         antwort = '<label for="'+self.label+'">'+self.label+'</label>\n'
-        antwort += '<input type="range" class="form-control" id="'+self.label+'" value="'+str(self.value)
+        antwort += '<input type="range" class="form-control-range" id="'+self.label+'" value="'+str(self.value)
         antwort += '" name="'+self.label+'"'
         antwort += ' min="'+str(self.min)+'"'
         antwort += ' max="'+str(self.max)+'"'
+        if self.marks:
+            antwort += ' list="range'+self.label+'"'
         if self.required: 
             antwort += " required"
         if self.readonly:
             antwort += " readonly"
         antwort += '>\n'
+        if self.marks:
+            antwort += '<datalist id="range'+self.label+'">'
+            for i in range(self.min, self.max+1):
+                antwort += '<option value="'+str(i)+'" label="'+str(i)+'"></option>'
+            antwort += '</datalist>'
+        return antwort
+
+
+class FormAuswahl:
+    liste = ""
+    value = ""
+    name = ""
+    def __init__(self, name, liste, value=0):
+           self.liste = liste
+           self.value = value
+           self.name = name
+    def __str__(self):
+        daten = self.liste.objects.filter(aktiv=True)
+        antwort = '\n<label for="'+self.name+'">'+self.name+': </label>\n'
+        antwort += '<select name="'+self.name+'" class="form-control">\n'
+        for zeile in daten:
+            antwort += '<option value="'+str(zeile.id)+'"'
+            if zeile.id == self.value:
+                antwort += "selected "
+            antwort +='>'+str(zeile)+'</option>\n'
+        antwort += '</select>\n'
+
+
         return antwort
 
 class FormBtn:
@@ -81,11 +114,19 @@ class FormBtn:
         antwort +=  self.name
         antwort +=  '</button>'
         return antwort
-
+        
 class FormBtnSave:
     name = "Speichern"
     def __str__(self):
         antwort ='<button type="submit" class="btn btn-primary" name="button" value="save">'
+        antwort +=  self.name
+        antwort +=  '</button>'
+        return antwort
+
+class FormBtnOk:
+    name = "OK"
+    def __str__(self):
+        antwort ='<button type="submit" class="btn btn-primary" name="button" value="ok">'
         antwort +=  self.name
         antwort +=  '</button>'
         return antwort
@@ -112,28 +153,6 @@ class FormBtnRemove:
         antwort ='<button type="submit" class="btn btn-danger" name="button" value="remove" formnovalidate>'
         antwort +=  self.name
         antwort +=  '</button>'
-        return antwort
-
-class FormAuswahl:
-    liste = ""
-    value = ""
-    name = ""
-    def __init__(self, name, liste, value=0):
-           self.liste = liste
-           self.value = value
-           self.name = name
-    def __str__(self):
-        daten = self.liste.objects.filter(aktiv=True)
-        antwort = '\n<label for="'+self.name+'">'+self.name+': </label>\n'
-        antwort += '<select name="'+self.name+'" class="form-control">\n'
-        for zeile in daten:
-            antwort += '<option value="'+str(zeile.id)+'"'
-            if zeile.id == self.value:
-                antwort += "selected "
-            antwort +='>'+str(zeile)+'</option>\n'
-        antwort += '</select>\n'
-
-
         return antwort
 
 def formZeile(*liste):

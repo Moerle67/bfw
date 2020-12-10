@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Ausbildung(models.Model):
     name = models.CharField(max_length=50)
@@ -99,6 +100,7 @@ class Projekt(models.Model):
     fach = models.ForeignKey(Fach,  on_delete=models.CASCADE)
     gruppe = models.ForeignKey(Gruppe, on_delete=models.CASCADE)
     start = models.DateTimeField(auto_now=False, auto_now_add=True)
+    bis = models.DateTimeField(auto_now=False, auto_now_add=False, default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
