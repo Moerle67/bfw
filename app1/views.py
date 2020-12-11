@@ -556,7 +556,10 @@ def projekt(request, p_id):
     projekt = Projekt.objects.get(id=int(p_id))
     max = len(ProjekteTN.objects.filter(projekt=projekt))
     fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
-    anteil = round(fertig*100/max,1)
+    if max>0:
+        anteil = round(fertig*100/max,1)
+    else:
+        anteil = 0
     bis = timezone.localtime(projekt.bis)
     datum = (bis.year, bis.month, bis.day, bis.hour, bis.minute)
     tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen", "teilnehmer")
@@ -569,7 +572,10 @@ def projekteAllg(request):
     for projekt in listeProjekte:
         max = len(ProjekteTN.objects.filter(projekt=projekt))
         fertig = len(ProjekteTN.objects.filter(projekt=projekt, offen=False))
-        anteil = round(fertig*100/max,1)
+        if max>0:
+            anteil = round(fertig*100/max,1)
+        else:
+            anteil = 0
         liste.append((projekt, anteil))
     return render(request, 'app1/projekt_allg.html', {"liste": liste, })
 
