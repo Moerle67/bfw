@@ -482,7 +482,7 @@ def kanbanOnNeu(request):
 
 def getTimeDiff(eingabe):
     timeListe = eingabe.strip().split()
-    stunden = minuten = tage = wochen = monate = 0
+    stunden = minuten = tage = wochen = 0
     for i in range(1,len(timeListe),2):
         if timeListe[i].upper() == "MINUTEN":
             minuten = int(timeListe[i-1])
