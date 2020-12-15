@@ -3,6 +3,7 @@ const monat = parseInt(document.getElementById("hidden_month").innerHTML);
 const tag = parseInt(document.getElementById("hidden_day").innerHTML);
 const stunde = parseInt(document.getElementById("hidden_hour").innerHTML);
 const minute = parseInt(document.getElementById("hidden_minutes").innerHTML);
+const sekunde = parseInt(document.getElementById("hidden_seconds").innerHTML);
 
 var startDateTime = new Date(jahr, monat-1, tag, stunde, minute, 0, 0);
 console.log(jahr, monat-1, tag, stunde, minute, startDateTime)

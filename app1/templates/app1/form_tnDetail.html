@@ -2,10 +2,14 @@
 {% load tz %}
 {% block zusatz %} 
 {% timezone "Europe/Berlin" %}
-<ul>                       
-{% for zeile in komments %}
-    <li>{{zeile.user.username}}, {{zeile.zeitpunkt}}, {{zeile.info}}</li>
-{% endfor %}
+<ul>
+<div class="row">
+    <div class="col-sm-6">                     
+        {% for zeile in komments %}
+            <li>{{zeile.user.username}}, {{zeile.zeitpunkt}}, {{zeile.info}}</li>
+        {% endfor %}
+    </div>
+</div>
 </ul>
 {% endtimezone %}
 

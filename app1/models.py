@@ -116,6 +116,8 @@ class ProjekteTN(models.Model):
     bewertung = models.IntegerField(default=0)
     kommentar = models.CharField(max_length=100, default="")
     offen = models.BooleanField(default=True)
+    def laenger(self):
+        return self.bis-timezone.now()
     def __str__(self):
         return self.teilnehmer.name+", "+self.projekt.bezeichnung
     class Meta:

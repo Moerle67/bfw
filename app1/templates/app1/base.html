@@ -29,24 +29,24 @@
                     {% endfor %}
                 </div>
                 <div class="col-md-2 navi">
-                    <ul>
-                        <li>(User: {{user}})</li>
-                        <li><a href="/pr1/auth?next=/pr1/">Log In</a></li>
-                        <li><a href="/pr1/logout">Log Out</a></li>
-                        <li></li>
-                        <li><a href="/pr1/impress">Impressum</a></li>
-                    </ul>
-
-                    <ul> Bereiche
-                        <li><a href="/pr1/kanban/">Kanban</a></li>
-                        <li><a href="/pr1/kanban/all/">Kan&shy;ban Übersicht</a></li> 
-                        <li><a href="/pr1/kanban/pck/">Kan&shy;ban PC-Klinik</a></li> 
-                        <li><a href="/pr1/fach/">Aus&shy;bildungs&shy;fächer</a></li>
-                        <li><a href="/pr1/ausb/">Maß&shy;nahme</a></li>
-                        <li><a href="/pr1/tn/">Teil&shy;nehmer</a></li>
-                        <li><a href="/pr1/grp/">Grup&shy;pen</a></li>
-                        <li><a href="/pr1/projekte/">Pro&shy;jekte</a></li>
-                    </ul>
+                    <nav class="nav flex-column">
+                        <div class="nav-link"> (User: {{user}})</div>
+                        <a class="nav-link gruen" href="/pr1/auth?next=/pr1/">Log In</a>
+                        <a class="nav-link rot" href="/pr1/logout">Log Out</a>
+                        <p class="center">------</p>
+                        <a class="nav-link" href="/pr1/impress">Impres&shy;sum</a>
+                    </nav>
+                    <br />
+                   <nav class="nav flex-column">
+                        <a class="nav-link active" href="/pr1/kanban/">Kanban</a>
+                        <a class="nav-link" href="/pr1/kanban/all/">Kan&shy;ban Übersicht</a>
+                        <a class="nav-link" href="/pr1/kanban/pck/">Kan&shy;ban PC-Klinik</a>
+                        <a class="nav-link" href="/pr1/fach/">Aus&shy;bildungs&shy;fächer</a>
+                        <a class="nav-link" href="/pr1/ausb/">Maß&shy;nahme</a>
+                        <a class="nav-link" href="/pr1/tn/">Teil&shy;nehmer</a>
+                        <a class="nav-link" href="/pr1/grp/">Grup&shy;pen</a>
+                        <a class="nav-link" href="/pr1/projekte/">Pro&shy;jekte</a>
+                    </nav>
                 </div>
             </div>    
         </div>

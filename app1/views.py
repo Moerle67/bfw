@@ -185,14 +185,15 @@ def tnAllgGrp(request, grp_id):
 @permission_required('app1.view_teilnehmer')
 def tnDetail(request, tn_id):
     message = ""
+    ds = Teilnehmer.objects.get(id=str(tn_id))
     if request.method == "GET":
-        ds = Teilnehmer.objects.get(id=str(tn_id))
         vname = ds.name
         vvorname = ds.vorname
         vausbildung = ds.ausbildung.id
         vemail = ds.email
         vmobil = ds.mobil
         komments = TnInfo.objects.filter(tn=ds, aktiv=True).order_by("-zeitpunkt")
+        projekte = ProjekteTN.objects.filter(teilnehmer=ds, offen=True).order_by("bis")
         if ds.gruppe != None:
             vgruppe = ds.gruppe.id
         else:
@@ -220,8 +221,8 @@ def tnDetail(request, tn_id):
             ds.email = vemail
             ds.gruppe = vgruppe
             ds.save()
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            #return redirect("/pr1/tn")
+            #return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            return redirect("/pr1/tn")
 
     name = FormInput("Name", value=vname)
     vorname = FormInput("Vorname", value=vvorname)
@@ -561,7 +562,7 @@ def projekt(request, p_id):
     else:
         anteil = 0
     bis = timezone.localtime(projekt.bis)
-    datum = (bis.year, bis.month, bis.day, bis.hour, bis.minute)
+    datum = (bis.year, bis.month, bis.day, bis.hour, bis.minute, bis.second)
     tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen", "teilnehmer")
     return render(request, 'app1/projekt_list.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil, "js": ("js/timer.js",), "datum": datum, })
 
