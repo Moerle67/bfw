@@ -212,6 +212,11 @@ def tnDetail(request, tn_id):
             ds = TnInfo(info=request.POST["Kommentar"], tn=tn, user=request.user)
             ds.save()
             return redirect("/pr1/tn")
+        elif request.POST['button'] == "delete":
+            ds = Teilnehmer.objects.get(id=str(tn_id))
+            ds.aktiv = False
+            ds.save()
+            return redirect("/pr1/tn")
         else:
             ds = Teilnehmer.objects.get(id=str(tn_id))
             ds.name = vname
@@ -232,8 +237,9 @@ def tnDetail(request, tn_id):
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
     komment = FormInput("Kommentar", required=False)
     btnKomm = FormBtn("Kommentar speichern", "comment")
+    btn_del = FormBtn("Teilnehmer löschen", "delete", color="danger")
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
-             "<hr />", FormBtnSave, FormBtnCancel, formLinie, komment, formLinie, btnKomm)
+             "<hr />", FormBtnSave, FormBtnCancel, btn_del,formLinie, komment, formLinie, btnKomm)
 
     return render(request, 'app1/form_tnDetail.html', {'forms': forms, 'h1': "Teilnehmerinfo", 'message': message, 
     "komments": komments })
