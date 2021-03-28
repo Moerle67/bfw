@@ -623,3 +623,9 @@ def projekteRemove(request,project_id):
     else:
         return redirect("/pr1/projekte/")
 
+@permission_required('app1.view_teilnehmer')
+def mitarbeit(request):
+    name = FormAuswahl("Gruppe", Gruppe)
+    thema = FormInput("Thema")
+    forms1 = (name, thema, formLinie, FormBtnOk, FormBtnCancel)
+    return render(request, 'app1/mitarbeit.html', {"forms1": forms1})

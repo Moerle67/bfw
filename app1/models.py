@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.fields import BooleanField
+from django.db.models.fields.related import ForeignKey
+from django.db.models.query_utils import check_rel_lookup_compatibility
 from django.utils import timezone
 
 class Ausbildung(models.Model):
@@ -122,3 +125,21 @@ class ProjekteTN(models.Model):
         return self.teilnehmer.name+", "+self.projekt.bezeichnung
     class Meta:
         verbose_name_plural = "Projekte Teilnehmer"
+
+class Mitarbeit_thema(models.Model):
+    gruppe = models.ForeignKey(Gruppe, on_delete=models.CASCADE)
+    start = models.DateTimeField(auto_now=True, auto_now_add=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    thema = models.CharField(max_length=255, default="")
+
+    def __str__(self):
+        return self.gruppe.name + ", "+self.start, ", "+ self.thema
+
+class Mitarbeit(models.Model):
+    tn = models.ForeignKey(Teilnehmer, on_delete=models.CASCADE)
+    thema = models.ForeignKey(Mitarbeit_thema, on_delete=models.CASCADE)
+    zeit = models.DateTimeField(auto_now=True, auto_now_add=False)
+    tn_inaktiv = models.BooleanField(default=False)
+    tn_abwesend = models.BooleanField(default=False)
+    thema_erledigt = models.BooleanField(default=True)
+    kommentar = models.CharField(max_length=255, default="")
