@@ -628,4 +628,4 @@ def mitarbeit(request):
     name = FormAuswahl("Gruppe", Gruppe)
     thema = FormInput("Thema")
     forms1 = (name, thema, formLinie, FormBtnOk, FormBtnCancel)
-    return render(request, 'app1/mitarbeit.html', {"forms1": forms1})
+    return render(request, 'app1/mitarbeit_start.html', {"forms1": forms1})
