@@ -60,6 +60,9 @@ button {
     box-shadow: 0.2em 0.2em gray;
 }
 
+button:hover {
+    box-shadow: 0.1em 0.1em black;
+}
 a:link, a:visited {
     color: rgb(29, 29, 31);
     }
