@@ -623,14 +623,35 @@ def projekteRemove(request,project_id):
     else:
         return redirect("/pr1/projekte/")
 
+def fuelle_listen_ma(thema, tn_liste):
+    liste1 = [] # Offen
+    liste2 = [] # Ok
+    liste3 = [] # Unaufmerksam
+    liste4 = [] # Abwesend 
+
+    for tn in tn_liste:
+        ds = Mitarbeit.objects.filter(tn=tn).last()
+        if ds is not None and ds.tn_abwesend == True:
+            liste4.append(tn)
+        else:
+            ds = Mitarbeit.objects.filter(tn=tn, thema=thema).last()
+            if ds is not None and ds.tn_inaktiv == True:
+                liste3.append(tn)
+            elif ds is not None and ds.tn_ok == True:
+                liste2.append(tn)
+            else:
+                liste1.append(tn)
+
+    return (liste1,liste2,liste3, liste4)
+
 @permission_required('app1.view_teilnehmer')
 def mitarbeit(request):
     if request.method == "GET":
         if "id" in request.GET:
             ds = Mitarbeit_thema.objects.get(id=int(request.GET["id"]))
             list_tn = Teilnehmer.objects.filter(gruppe=ds.gruppe)
-            
-            return render(request, 'app1/mitarbeit_liste.html', {"inhalt": ds, "liste1": list_tn})
+            listen = fuelle_listen_ma(ds, list_tn)
+            return render(request, 'app1/mitarbeit_liste.html', {"inhalt": ds, "listen": listen})
         else:
             name = FormAuswahl("Gruppe", Gruppe)
             thema = FormInput("Thema")
@@ -647,6 +668,49 @@ def mitarbeit(request):
             id = str(ds.id)
         else:
             id = request.POST["id"]
-            # if "ok" in request.POST:
+            if "ok" in request.POST:
+                tn_nr = request.POST["ok"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, tn_ok=True, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "unaufmerksam" in request.POST:
+                tn_nr = request.POST["unaufmerksam"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, tn_inaktiv=True, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "abwesend" in request.POST:
+                tn_nr = request.POST["abwesend"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, tn_abwesend=True, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "anwesend" in request.POST:
+                tn_nr = request.POST["anwesend"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "nochmal" in request.POST:
+                tn_nr = request.POST["nochmal"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "zurueck" in request.POST:
+                tn_nr = request.POST["zurueck"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
                 
         return redirect('/pr1/mitarbeit?id='+id)
+
+
