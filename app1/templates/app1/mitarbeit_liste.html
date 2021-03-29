@@ -1,14 +1,22 @@
 ﻿{% extends 'app1/base.html' %}
 
 {% block h1 %}
-Mitarbeit - {{inhalt.0}} - {{inhalt.1}}
+Mitarbeit - {{inhalt.gruppe.name}} - {{inhalt.thema}}
 {% endblock h1 %}
 
 {% block content %}
-<form method="POST">
-{% csrf_token %}
-    {% for form in forms1 %}
-    {{ form | safe }}
+   <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{inhalt.id}}">
+    <ol>
+    {% for zeile in liste1 %}
+            <li>
+                <input type="text" name="text_{{zeile.id}}"> 
+                <button type="submit" name="ok" class="btn btn-success btn-sm" value="{{zeile.id}}">{{zeile.name}},{{zeile.vorname}} - {{zeile.ausbildung.slug}}</button>
+                <button type="submit" name="unaufmerksam" class="btn btn-warning btn-sm" value="{{zeile.id}}">Unaufmerksam</button>
+                <button type="submit" name="abwesend" class="btn btn-danger btn-sm" value="{{zeile.id}}">Abwesend</button>
+            </li>
     {% endfor %}
-</form>
+    </ol>
+    </form>
 {% endblock content %}

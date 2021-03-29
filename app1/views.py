@@ -647,6 +647,6 @@ def mitarbeit(request):
             id = str(ds.id)
         else:
             id = request.POST["id"]
-            if "ok" in request.POST:
+            # if "ok" in request.POST:
                 
         return redirect('/pr1/mitarbeit?id='+id)
