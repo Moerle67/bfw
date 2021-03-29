@@ -141,5 +141,5 @@ class Mitarbeit(models.Model):
     zeit = models.DateTimeField(auto_now=True, auto_now_add=False)
     tn_inaktiv = models.BooleanField(default=False)
     tn_abwesend = models.BooleanField(default=False)
-    thema_erledigt = models.BooleanField(default=True)
+    tn_ok = models.BooleanField(default=False)
     kommentar = models.CharField(max_length=255, default="")

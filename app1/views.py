@@ -567,7 +567,7 @@ def projekt(request, p_id):
         anteil = round(fertig*100/max,1)
     else:
         anteil = 0
-    bis = timezone.localtime(projekt.bis)
+    bis = projekt.bis
     datum = (bis.year, bis.month, bis.day, bis.hour, bis.minute, bis.second)
     tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen", "teilnehmer")
     return render(request, 'app1/projekt_list.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil, "js": ("js/timer.js",), "datum": datum, })
@@ -629,17 +629,24 @@ def mitarbeit(request):
         if "id" in request.GET:
             ds = Mitarbeit_thema.objects.get(id=int(request.GET["id"]))
             list_tn = Teilnehmer.objects.filter(gruppe=ds.gruppe)
-            inhalt= (ds.gruppe.name, ds.thema)
-            return render(request, 'app1/mitarbeit_liste.html', {"inhalt": inhalt})
+            
+            return render(request, 'app1/mitarbeit_liste.html', {"inhalt": ds, "liste1": list_tn})
         else:
             name = FormAuswahl("Gruppe", Gruppe)
             thema = FormInput("Thema")
             forms1 = (name, thema, formLinie, FormBtnOk, FormBtnCancel)
             return render(request, 'app1/mitarbeit_start.html', {"forms1": forms1})
     else:
-        id_gr = int(request.POST["Gruppe"])
-        thema = request.POST["Thema"]
-        gruppe =Gruppe.objects.get(id=id_gr)
-        ds = Mitarbeit_thema(gruppe=gruppe, thema=thema, user=request.user, start=timezone.now())
-        ds.save()
-        return redirect('/pr1/mitarbeit?id='+str(ds.id))
+        print(request.POST)
+        if "Gruppe" in request.POST:
+            id_gr = int(request.POST["Gruppe"])
+            thema = request.POST["Thema"]
+            gruppe =Gruppe.objects.get(id=id_gr)
+            ds = Mitarbeit_thema(gruppe=gruppe, thema=thema, user=request.user, start=timezone.now())
+            ds.save()
+            id = str(ds.id)
+        else:
+            id = request.POST["id"]
+            if "ok" in request.POST:
+                
+        return redirect('/pr1/mitarbeit?id='+id)
