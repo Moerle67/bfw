@@ -390,7 +390,7 @@ def kanbanNeu(request):
             vprio = int(request.POST['Priorität'])
             ds = KanbanProject(name=vname, beschreibung=vkommentar,
                                user=request.user, prio=vprio, 
-                               zeitpunkt=now(), bereich=vbereich)
+                               zeitpunkt=timezone.now(), bereich=vbereich)
             ds.save()
             return redirect("/pr1/kanban")
 
@@ -634,6 +634,6 @@ def mitarbeit(request):
         id_gr = int(request.POST["Gruppe"])
         thema = request.POST["Thema"]
         gruppe =Gruppe.objects.get(id=id_gr)
-        ds = Mitarbeit_thema(gruppe=gruppe, thema=thema, user=request.user)
+        ds = Mitarbeit_thema(gruppe=gruppe, thema=thema, user=request.user, start=timezone.now())
         ds.save()
         return redirect('/pr1/mitarbeit?id='+str(ds.id))
