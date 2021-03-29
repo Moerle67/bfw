@@ -132,8 +132,8 @@ class Mitarbeit_thema(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     thema = models.CharField(max_length=255, default="")
 
-    def __str__(self):
-        return self.gruppe.name + ", "+self.start, ", "+ self.thema
+    #def __str__(self):
+    #    return self.gruppe.name + ", "+str(self.start), ", "+ self.thema
 
 class Mitarbeit(models.Model):
     tn = models.ForeignKey(Teilnehmer, on_delete=models.CASCADE)
