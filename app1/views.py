@@ -626,10 +626,16 @@ def projekteRemove(request,project_id):
 @permission_required('app1.view_teilnehmer')
 def mitarbeit(request):
     if request.method == "GET":
-        name = FormAuswahl("Gruppe", Gruppe)
-        thema = FormInput("Thema")
-        forms1 = (name, thema, formLinie, FormBtnOk, FormBtnCancel)
-        return render(request, 'app1/mitarbeit_start.html', {"forms1": forms1})
+        if "id" in request.GET:
+            ds = Mitarbeit_thema.objects.get(id=int(request.GET["id"]))
+            list_tn = Teilnehmer.objects.filter(gruppe=ds.gruppe)
+            inhalt= (ds.gruppe.name, ds.thema)
+            return render(request, 'app1/mitarbeit_liste.html', {"inhalt": inhalt})
+        else:
+            name = FormAuswahl("Gruppe", Gruppe)
+            thema = FormInput("Thema")
+            forms1 = (name, thema, formLinie, FormBtnOk, FormBtnCancel)
+            return render(request, 'app1/mitarbeit_start.html', {"forms1": forms1})
     else:
         id_gr = int(request.POST["Gruppe"])
         thema = request.POST["Thema"]
