@@ -9,6 +9,7 @@ from django.shortcuts import (get_list_or_404, get_object_or_404, redirect,
 from django.contrib import messages
 from django.template import loader
 from django.utils import timezone
+from .forms import UploadFileForm
 
 from .classForm import *
 
@@ -310,13 +311,19 @@ def grpNeu(request):
         else:
             ds = Gruppe(name=vname)
             ds.save()
+            if request.POST["button"] == "import":
+                form = UploadFileForm(request.POST, request.FILES)
+                if form.is_valid():
+                    #handle_uploaded_file(request.FILES['file'])
+                    return HttpResponseRedirect('/success/url/')
             if request.POST['button'] == "save":
                 return redirect("/pr1/grp")
             else:
                 return redirect("/pr1/grp/neu")
     name = FormInput("Name", value=vname)
+    btn_import = FormBtn("Import", "import")
     forms = (name, 
-             "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel)
+             "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel, btn_import)
 
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Gruppe erfassen", 'message': message})
 
@@ -328,6 +335,7 @@ def grpDetail(request, grp_id):
         ds = Gruppe.objects.get(id=str(grp_id))
         vname = ds.name
     else:
+        print(request.POST)
         vname = request.POST['Name']
  
         if request.POST['button'] == "cancel":
@@ -343,8 +351,9 @@ def grpDetail(request, grp_id):
                 ds.save()
                 return redirect("/pr1/grp")
     name = FormInput("Name", value=vname)
+    area = '<textarea cols="50" rows="10" name="textar">Es war dunkel, feucht und neblig …</textarea>'
     forms = (name, 
-             "<hr />", FormBtnSave, FormBtnCancel, FormBtnRemove)
+             "<hr />", FormBtnSave, FormBtnCancel, FormBtnRemove, formLinie, area)
 
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Gruppe bearbeiten", 'message': message})
 
