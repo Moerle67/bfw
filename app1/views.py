@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import permission_required
@@ -281,7 +281,7 @@ def tnNeu(request):
     name = FormInput("Name", value=vname)
     vorname = FormInput("Vorname", value=vvorname)
     ausbildung = FormAuswahl("Ausbildung", Ausbildung, value=vausbildung)
-    email = FormInput("Email", type="mail", value=vemail)
+    email = FormInput("Email", type="mail", value=vemail, required=False)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
     gruppe = FormAuswahl("Gruppe", Gruppe, value=sgruppe)
     btnUeber = FormBtn("Mail übertragen","mail", formnovalidate=True)
@@ -710,7 +710,41 @@ def mitarbeit(request):
                 kommentar = request.POST["text_"+tn_nr]
                 ds = Mitarbeit(tn=ds_tn, thema = ds_thema, kommentar = kommentar, zeit=timezone.now())
                 ds.save()
+            elif "text_neu" in request.POST:
+                thema = request.POST["text_neu"]
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                ds = Mitarbeit_thema(gruppe=ds_thema.gruppe, thema=thema, user=request.user, start=timezone.now())
+                ds.save()
+                id = str(ds.id)
+            
                 
         return redirect('/pr1/mitarbeit?id='+id)
+@permission_required('app1.view_teilnehmer')
+def ma_auswertung(request):
+    if request.method == "GET":
+        datum  = date.today().strftime("%Y-%m-%d")
+        gruppe = FormAuswahl("Gruppe", Gruppe)
+        return render(request, 'app1/mitarbeit_auswertung.html', {"datum" : datum, "gruppe": gruppe})
+    else:
+        eintraege = []
+        gruppe = Gruppe.objects.get(id=int(request.POST["Gruppe"]))
+        datum = datetime.strptime(request.POST["datum"], '%Y-%m-%d')
+        liste_tn = Teilnehmer.objects.filter(gruppe=gruppe).order_by("name")
+        for tn in liste_tn:
+            person = []
+            liste_tn_ma = Mitarbeit.objects.filter(tn=tn, zeit__date=datum).order_by("zeit")
+            person.append(tn.name+", "+tn.vorname)            
+            for eintrag in liste_tn_ma:
+                if eintrag.tn_abwesend:
+                   person.append("<br />Abwesend ab: "+eintrag.zeit.strftime('%H:%M:%S'))
+                elif eintrag.tn_inaktiv:
+                    person.append("<br />Inaktiv ab: "+eintrag.zeit.strftime('%H:%M:%S'))
+                elif not eintrag.tn_ok:
+                    person.append("bis: "+eintrag.zeit.strftime('%H:%M:%S'))
+            eintraege.append(person)
+        datum  = date.today().strftime("%Y-%m-%d")
+        gruppe = FormAuswahl("Gruppe", Gruppe)
+        return render(request, 'app1/mitarbeit_auswertung.html', {"datum" : datum, "gruppe": gruppe, "eintraege": eintraege})
+
 
 
