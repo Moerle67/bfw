@@ -40,8 +40,8 @@ class Teilnehmer(models.Model):
     ausbildung = models.ForeignKey(Ausbildung, on_delete=models.CASCADE)
     gruppe = models.ForeignKey(Gruppe, on_delete=models.CASCADE, null=True)
     aktiv = models.BooleanField(default=True)
-    email = models.CharField(max_length=50)
-    mobil = models.CharField(max_length=50, blank=True)
+    email = models.CharField(max_length=255, blank=True)
+    mobil = models.CharField(max_length=255, blank=True)
     def __str__(self):
         return self.name+", "+self.vorname+" - "+self.ausbildung.slug+" / "+str(self.gruppe)
     class Meta:
