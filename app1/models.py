@@ -1,3 +1,5 @@
+# todo
+# Gruppe erhalten bei E-Mail übertragen
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.fields import BooleanField
