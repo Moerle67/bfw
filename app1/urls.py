@@ -40,6 +40,8 @@ urlpatterns = [
     
     path('mitarbeit', views.mitarbeit, name = 'mitarbeit'),
     path('ma_auswertung', views.ma_auswertung, name = 'ma_auswertung'),
+
+    path('essen/anmeldung/', views.essen_anmeldung, name = 'essenAnmeldung'),
     # ex: /polls/5/
     # path('<int:question_id>/', views.detail, name='detail'),
     # ex: /polls/5/results/

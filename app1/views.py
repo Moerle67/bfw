@@ -755,5 +755,12 @@ def ma_auswertung(request):
         gruppe = FormAuswahl("Gruppe", Gruppe)
         return render(request, 'app1/mitarbeit_auswertung.html', {"datum" : datum, "gruppe": gruppe, "eintraege": eintraege})
 
-
-
+def essen_anmeldung(request):
+    form_gruppe=FormAuswahl("Gruppe",Gruppe, aktiv=False)
+    datum = datetime.now().strftime("%Y-%m-%d")
+    form_dat = FormInput("Datum: ",type='date', value=datum)
+    form_tn = FormInput("Anwesende :", type='number')
+    form_essen = FormInput("evtl.  Essen:", type='number')
+    forms =(formZeile(form_gruppe, form_dat),formZeile(form_tn, form_essen), formLinie, FormBtnOk, FormBtnCancel)
+    return render(request, 'app1/base_form.html', {"h1": "Essen anmelden", "forms": forms, })
+    

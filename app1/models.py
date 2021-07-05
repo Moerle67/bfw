@@ -147,3 +147,11 @@ class Mitarbeit(models.Model):
     kommentar = models.CharField(max_length=255, default="")
     def __str__(self):
         return self.tn.name + ", "+ str(self.zeit)
+
+class Essenanmeldung(models.Model):
+    gruppe = models.ForeignKey(Gruppe, on_delete=models.RESTRICT)
+    datum = models.DateField(auto_now=False, auto_now_add=False)
+    gemeldet = models.DateTimeField(auto_now=False, auto_now_add=True)
+    anzahl_tn = models.IntegerField()
+    anzahl_essen = models.IntegerField()
+    gemeldet_durch = models.ForeignKey(User, on_delete=models.RESTRICT)
