@@ -7,7 +7,6 @@ from django.shortcuts import (get_list_or_404, get_object_or_404, redirect,
                               render)
 
 from django.contrib import messages
-from django.template import loader
 from django.utils import timezone
 from .forms import UploadFileForm
 
