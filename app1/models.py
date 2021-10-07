@@ -2,7 +2,7 @@
 # Gruppe erhalten bei E-Mail übertragen
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.fields import BooleanField
+from django.db.models.fields import BooleanField, TextField
 from django.db.models.fields.related import ForeignKey
 from django.db.models.query_utils import check_rel_lookup_compatibility
 from django.utils import timezone
@@ -27,14 +27,22 @@ class Fach(models.Model):
         ordering = ['slug']
         verbose_name_plural = "Fächer"
 
+class Raum(models.Model):
+    standort = models.CharField(max_length=50)
+    bezeichnung = models.CharField(max_length=50)
+    groesse = models.IntegerField()
+
 class Gruppe(models.Model):
     name = models.CharField(max_length=50)
     aktiv = models.BooleanField(default=True)
+    raum = models.ForeignKey(Raum, on_delete=models.CASCADE, null=True)
     def __str__(self):
         return self.name+ "("+str(self.id)+")"
     class Meta:
         ordering = ['name']
         verbose_name_plural = "Gruppen"
+
+
 
 class Teilnehmer(models.Model):
     name = models.CharField(max_length=50)
@@ -155,3 +163,28 @@ class Essenanmeldung(models.Model):
     anzahl_tn = models.IntegerField()
     anzahl_essen = models.IntegerField()
     gemeldet_durch = models.ForeignKey(User, on_delete=models.RESTRICT)
+
+class PlanFarbe(models.Model):
+    farbe = models.CharField(max_length=50)
+
+class PlanZeiten(models.Model):
+    einheit = models.IntegerField()
+    von = models.CharField(max_length=10)
+    bis = models.CharField(max_length=10)
+
+class Ausbilder(models.Model):
+    aktiv = models.BooleanField()
+    anrede = models.CharField(max_length=50)
+    vorname = models.CharField(max_length=50)
+    nachname = models.CharField(max_length=50)
+    kuerzel = models.CharField(max_length=4)
+
+class Plan(models.Model):
+    jahr = models.IntegerField()
+    kw = models.IntegerField()
+    tag = models.IntegerField()
+    einheit = models.ForeignKey(PlanZeiten, on_delete=models.CASCADE)
+    fach = models.CharField( max_length=50)
+    ausbilder = models.ForeignKey(Ausbilder, on_delete=models.CASCADE)
+    raum = models.ForeignKey(Raum, on_delete=models.CASCADE)
+    farbe = models.ForeignKey(PlanFarbe, on_delete=models.CASCADE)
