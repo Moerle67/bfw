@@ -12,4 +12,10 @@ admin.site.register(TnInfo)
 admin.site.register(Projekt)
 admin.site.register(ProjekteTN)
 admin.site.register(Mitarbeit)
-admin.site.register(Mitarbeit_thema)
+admin.site.register(PlanFarbe)
+admin.site.register(PlanZeiten)
+admin.site.register(Ausbilder)
+admin.site.register(Plan)
+admin.site.register(Raum)
+
+

@@ -31,6 +31,9 @@ class Raum(models.Model):
     standort = models.CharField(max_length=50)
     bezeichnung = models.CharField(max_length=50)
     groesse = models.IntegerField()
+    def __str__(self):
+        return self.bezeichnung+"/"+self.standort+" - "+str(self.id)
+
 
 class Gruppe(models.Model):
     name = models.CharField(max_length=50)
@@ -166,20 +169,27 @@ class Essenanmeldung(models.Model):
 
 class PlanFarbe(models.Model):
     farbe = models.CharField(max_length=50)
+    def __str__(self):
+        return self.farbe+" - "+str(self.id)
 
 class PlanZeiten(models.Model):
-    einheit = models.IntegerField()
+    einheit = models.IntegerField(unique=True)
     von = models.CharField(max_length=10)
     bis = models.CharField(max_length=10)
+    def __str__(self):
+        return str(self.einheit)+"-"+self.von+":"+self.bis+" - "+str(self.id)
 
 class Ausbilder(models.Model):
-    aktiv = models.BooleanField()
+    aktiv = models.BooleanField(default=True)
     anrede = models.CharField(max_length=50)
     vorname = models.CharField(max_length=50)
     nachname = models.CharField(max_length=50)
     kuerzel = models.CharField(max_length=4)
+    def __str__(self):
+            return self.nachname+"; "+self.vorname+" ("+self.kuerzel+") "+str(self.id)
 
 class Plan(models.Model):
+    gruppe = models.ForeignKey(Gruppe, on_delete=models.CASCADE)
     jahr = models.IntegerField()
     kw = models.IntegerField()
     tag = models.IntegerField()
@@ -188,3 +198,5 @@ class Plan(models.Model):
     ausbilder = models.ForeignKey(Ausbilder, on_delete=models.CASCADE)
     raum = models.ForeignKey(Raum, on_delete=models.CASCADE)
     farbe = models.ForeignKey(PlanFarbe, on_delete=models.CASCADE)
+    def __str__(self):
+        return str(self.gruppe)+"/"+str(self.jahr)+"/"+str(self.kw)+"/"+str(self.tag)+"/"+str(self.einheit)+"/"+self.fach+"/"+str(self.ausbilder)+" - "+str(self.id)
