@@ -762,4 +762,13 @@ def essen_anmeldung(request):
     form_essen = FormInput("evtl.  Essen:", type='number')
     forms =(formZeile(form_gruppe, form_dat),formZeile(form_tn, form_essen), formLinie, FormBtnOk, FormBtnCancel)
     return render(request, 'app1/base_form.html', {"h1": "Essen anmelden", "forms": forms, })
-    
+
+def plan_kurz(request, gruppe):
+    return render(request, 'app1/base.html')
+
+def plan(request, gruppe, jahr, kw):
+    plan = Plan.objects.filter(gruppe=gruppe,jahr=jahr,kw=kw)
+    zeiten = PlanZeiten.objects.all()
+    print(plan)
+    print(zeiten)
+    return render(request, 'app1/base.html')
