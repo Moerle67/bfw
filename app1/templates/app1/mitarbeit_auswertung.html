@@ -1,0 +1,24 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block h1 %}
+Auswertung Mitarbeit
+{% endblock h1 %}
+
+{% block content %}
+<form method="POST">
+{% csrf_token %}
+    <div class="input-group mb-3">
+        <label for="date">Datum:</label>
+        <input type="date" id="Datum" name="datum" value="{{datum}}">
+        {{gruppe | safe}}
+        <button type="submit" class="btn btn-success">Auswahl</button>
+    </div>
+</form>
+{% for eintrag in eintraege %}
+    <p>
+    {% for person in eintrag %}
+        {{person | safe}}
+    {% endfor %}
+    </p>
+{% endfor %}
+{% endblock content %}

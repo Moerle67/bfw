@@ -65,12 +65,16 @@ class FormAuswahl:
     liste = ""
     value = ""
     name = ""
-    def __init__(self, name, liste, value=0):
+    def __init__(self, name, liste, value=0, aktiv=True):
            self.liste = liste
            self.value = value
            self.name = name
+           self.aktiv = aktiv
     def __str__(self):
-        daten = self.liste.objects.filter(aktiv=True)
+        if self.aktiv:
+            daten = self.liste.objects.filter(aktiv=True)
+        else:
+            daten = self.liste.objects.filter()
         antwort = '\n<label for="'+self.name+'">'+self.name+': </label>\n'
         antwort += '<select name="'+self.name+'" class="form-control">\n'
         for zeile in daten:

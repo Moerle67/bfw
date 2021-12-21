@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import permission_required
@@ -7,8 +7,8 @@ from django.shortcuts import (get_list_or_404, get_object_or_404, redirect,
                               render)
 
 from django.contrib import messages
-from django.template import loader
 from django.utils import timezone
+from .forms import UploadFileForm
 
 from .classForm import *
 
@@ -212,6 +212,11 @@ def tnDetail(request, tn_id):
             ds = TnInfo(info=request.POST["Kommentar"], tn=tn, user=request.user)
             ds.save()
             return redirect("/pr1/tn")
+        elif request.POST['button'] == "delete":
+            ds = Teilnehmer.objects.get(id=str(tn_id))
+            ds.aktiv = False
+            ds.save()
+            return redirect("/pr1/tn")
         else:
             ds = Teilnehmer.objects.get(id=str(tn_id))
             ds.name = vname
@@ -232,8 +237,9 @@ def tnDetail(request, tn_id):
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
     komment = FormInput("Kommentar", required=False)
     btnKomm = FormBtn("Kommentar speichern", "comment")
+    btn_del = FormBtn("Teilnehmer löschen", "delete", color="danger")
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
-             "<hr />", FormBtnSave, FormBtnCancel, formLinie, komment, formLinie, btnKomm)
+             "<hr />", FormBtnSave, FormBtnCancel, btn_del,formLinie, komment, formLinie, btnKomm)
 
     return render(request, 'app1/form_tnDetail.html', {'forms': forms, 'h1': "Teilnehmerinfo", 'message': message, 
     "komments": komments })
@@ -275,7 +281,7 @@ def tnNeu(request):
     name = FormInput("Name", value=vname)
     vorname = FormInput("Vorname", value=vvorname)
     ausbildung = FormAuswahl("Ausbildung", Ausbildung, value=vausbildung)
-    email = FormInput("Email", type="mail", value=vemail)
+    email = FormInput("Email", type="mail", value=vemail, required=False)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
     gruppe = FormAuswahl("Gruppe", Gruppe, value=sgruppe)
     btnUeber = FormBtn("Mail übertragen","mail", formnovalidate=True)
@@ -304,13 +310,19 @@ def grpNeu(request):
         else:
             ds = Gruppe(name=vname)
             ds.save()
+            if request.POST["button"] == "import":
+                form = UploadFileForm(request.POST, request.FILES)
+                if form.is_valid():
+                    #handle_uploaded_file(request.FILES['file'])
+                    return HttpResponseRedirect('/success/url/')
             if request.POST['button'] == "save":
                 return redirect("/pr1/grp")
             else:
                 return redirect("/pr1/grp/neu")
     name = FormInput("Name", value=vname)
+    btn_import = FormBtn("Import", "import")
     forms = (name, 
-             "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel)
+             "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel, btn_import)
 
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Gruppe erfassen", 'message': message})
 
@@ -322,6 +334,7 @@ def grpDetail(request, grp_id):
         ds = Gruppe.objects.get(id=str(grp_id))
         vname = ds.name
     else:
+        print(request.POST)
         vname = request.POST['Name']
  
         if request.POST['button'] == "cancel":
@@ -337,8 +350,9 @@ def grpDetail(request, grp_id):
                 ds.save()
                 return redirect("/pr1/grp")
     name = FormInput("Name", value=vname)
+    area = '<textarea cols="50" rows="10" name="textar">Es war dunkel, feucht und neblig …</textarea>'
     forms = (name, 
-             "<hr />", FormBtnSave, FormBtnCancel, FormBtnRemove)
+             "<hr />", FormBtnSave, FormBtnCancel, FormBtnRemove, formLinie, area)
 
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Gruppe bearbeiten", 'message': message})
 
@@ -384,7 +398,7 @@ def kanbanNeu(request):
             vprio = int(request.POST['Priorität'])
             ds = KanbanProject(name=vname, beschreibung=vkommentar,
                                user=request.user, prio=vprio, 
-                               zeitpunkt=now(), bereich=vbereich)
+                               zeitpunkt=timezone.now(), bereich=vbereich)
             ds.save()
             return redirect("/pr1/kanban")
 
@@ -561,7 +575,7 @@ def projekt(request, p_id):
         anteil = round(fertig*100/max,1)
     else:
         anteil = 0
-    bis = timezone.localtime(projekt.bis)
+    bis = projekt.bis
     datum = (bis.year, bis.month, bis.day, bis.hour, bis.minute, bis.second)
     tn_liste = ProjekteTN.objects.filter(projekt_id=int(p_id)).order_by("-offen", "teilnehmer")
     return render(request, 'app1/projekt_list.html', {'liste': tn_liste, 'projekt': projekt, 'anteil': anteil, "js": ("js/timer.js",), "datum": datum, })
@@ -617,3 +631,144 @@ def projekteRemove(request,project_id):
     else:
         return redirect("/pr1/projekte/")
 
+def fuelle_listen_ma(thema, tn_liste):
+    liste1 = [] # Offen
+    liste2 = [] # Ok
+    liste3 = [] # Unaufmerksam
+    liste4 = [] # Abwesend 
+
+    for tn in tn_liste:
+        ds = Mitarbeit.objects.filter(tn=tn).last()
+        if ds is not None and ds.tn_abwesend == True:
+            liste4.append(tn)
+        else:
+            ds = Mitarbeit.objects.filter(tn=tn, thema=thema).last()
+            if ds is not None and ds.tn_inaktiv == True:
+                liste3.append(tn)
+            elif ds is not None and ds.tn_ok == True:
+                liste2.append(tn)
+            else:
+                liste1.append(tn)
+
+    return (liste1,liste2,liste3, liste4)
+
+@permission_required('app1.view_teilnehmer')
+def mitarbeit(request):
+    if request.method == "GET":
+        if "id" in request.GET:
+            ds = Mitarbeit_thema.objects.get(id=int(request.GET["id"]))
+            list_tn = Teilnehmer.objects.filter(gruppe=ds.gruppe)
+            listen = fuelle_listen_ma(ds, list_tn)
+            return render(request, 'app1/mitarbeit_liste.html', {"inhalt": ds, "listen": listen})
+        else:
+            name = FormAuswahl("Gruppe", Gruppe)
+            thema = FormInput("Thema")
+            forms1 = (name, thema, formLinie, FormBtnOk, FormBtnCancel)
+            return render(request, 'app1/mitarbeit_start.html', {"forms1": forms1})
+    else:
+        print(request.POST)
+        if "Gruppe" in request.POST:
+            id_gr = int(request.POST["Gruppe"])
+            thema = request.POST["Thema"]
+            gruppe =Gruppe.objects.get(id=id_gr)
+            ds = Mitarbeit_thema(gruppe=gruppe, thema=thema, user=request.user, start=timezone.now())
+            ds.save()
+            id = str(ds.id)
+        else:
+            id = request.POST["id"]
+            if "ok" in request.POST:
+                tn_nr = request.POST["ok"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, tn_ok=True, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "unaufmerksam" in request.POST:
+                tn_nr = request.POST["unaufmerksam"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, tn_inaktiv=True, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "abwesend" in request.POST:
+                tn_nr = request.POST["abwesend"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, tn_abwesend=True, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "anwesend" in request.POST:
+                tn_nr = request.POST["anwesend"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "nochmal" in request.POST:
+                tn_nr = request.POST["nochmal"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "zurueck" in request.POST:
+                tn_nr = request.POST["zurueck"]
+                ds_tn = Teilnehmer.objects.get(id=int(tn_nr))
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                kommentar = request.POST["text_"+tn_nr]
+                ds = Mitarbeit(tn=ds_tn, thema = ds_thema, kommentar = kommentar, zeit=timezone.now())
+                ds.save()
+            elif "text_neu" in request.POST:
+                thema = request.POST["text_neu"]
+                ds_thema = Mitarbeit_thema.objects.get(id=int(id))
+                ds = Mitarbeit_thema(gruppe=ds_thema.gruppe, thema=thema, user=request.user, start=timezone.now())
+                ds.save()
+                id = str(ds.id)
+            
+                
+        return redirect('/pr1/mitarbeit?id='+id)
+@permission_required('app1.view_teilnehmer')
+def ma_auswertung(request):
+    if request.method == "GET":
+        datum  = date.today().strftime("%Y-%m-%d")
+        gruppe = FormAuswahl("Gruppe", Gruppe)
+        return render(request, 'app1/mitarbeit_auswertung.html', {"datum" : datum, "gruppe": gruppe})
+    else:
+        eintraege = []
+        gruppe = Gruppe.objects.get(id=int(request.POST["Gruppe"]))
+        datum = datetime.strptime(request.POST["datum"], '%Y-%m-%d')
+        liste_tn = Teilnehmer.objects.filter(gruppe=gruppe).order_by("name")
+        for tn in liste_tn:
+            person = []
+            liste_tn_ma = Mitarbeit.objects.filter(tn=tn, zeit__date=datum).order_by("zeit")
+            person.append(tn.name+", "+tn.vorname)            
+            for eintrag in liste_tn_ma:
+                if eintrag.tn_abwesend:
+                   person.append("<br />Abwesend ab: "+eintrag.zeit.strftime('%H:%M:%S'))
+                elif eintrag.tn_inaktiv:
+                    person.append("<br />Inaktiv ab: "+eintrag.zeit.strftime('%H:%M:%S'))
+                elif not eintrag.tn_ok:
+                    person.append("bis: "+eintrag.zeit.strftime('%H:%M:%S'))
+            eintraege.append(person)
+        datum  = date.today().strftime("%Y-%m-%d")
+        gruppe = FormAuswahl("Gruppe", Gruppe)
+        return render(request, 'app1/mitarbeit_auswertung.html', {"datum" : datum, "gruppe": gruppe, "eintraege": eintraege})
+
+def essen_anmeldung(request):
+    form_gruppe=FormAuswahl("Gruppe",Gruppe, aktiv=False)
+    datum = datetime.now().strftime("%Y-%m-%d")
+    form_dat = FormInput("Datum: ",type='date', value=datum)
+    form_tn = FormInput("Anwesende :", type='number')
+    form_essen = FormInput("evtl.  Essen:", type='number')
+    forms =(formZeile(form_gruppe, form_dat),formZeile(form_tn, form_essen), formLinie, FormBtnOk, FormBtnCancel)
+    return render(request, 'app1/base_form.html', {"h1": "Essen anmelden", "forms": forms, })
+
+def plan_kurz(request, gruppe):
+    return render(request, 'app1/base.html')
+
+def plan(request, gruppe, jahr, kw):
+    plan = Plan.objects.filter(gruppe=gruppe,jahr=jahr,kw=kw)
+    zeiten = PlanZeiten.objects.all()
+    print(plan)
+    print(zeiten)
+    return render(request, 'app1/base.html')

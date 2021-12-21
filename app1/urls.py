@@ -37,6 +37,16 @@ urlpatterns = [
     path('projekte/', views.projekteAllg, name = 'projekteAllg'),
     path('projekte/tndetail/<int:ptn_id>', views.projekteTNDetail, name = 'projekteAllg'),
     path('projekt/<int:project_id>/remove/', views.projekteRemove, name = 'projekteRemove'),
+    
+    path('mitarbeit', views.mitarbeit, name = 'mitarbeit'),
+    path('ma_auswertung', views.ma_auswertung, name = 'ma_auswertung'),
+
+    path('essen/anmeldung/', views.essen_anmeldung, name = 'essenAnmeldung'),
+
+    # Ausbildungsplan
+    path('plan/<int:gruppe>/<int:jahr>/<int:kw>/', views.plan, name = 'plan'),
+    path('plan/<int:gruppe>', views.plan_kurz, name = 'plan_kurz'),
+
     # ex: /polls/5/
     # path('<int:question_id>/', views.detail, name='detail'),
     # ex: /polls/5/results/

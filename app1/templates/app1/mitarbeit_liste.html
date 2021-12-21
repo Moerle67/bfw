@@ -1,0 +1,64 @@
+﻿{% extends 'app1/base.html' %}
+
+{% block h1 %}
+Mitarbeit - {{inhalt.gruppe.name}} - {{inhalt.thema}}
+{% endblock h1 %}
+
+{% block content %}
+   <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{inhalt.id}}">
+    {% if listen.0|length > 0 %}
+        <h2>Offen</h2>
+        <ol>
+        {% for zeile in listen.0 %}
+                <li>
+                    <input type="text" name="text_{{zeile.id}}"> 
+                    <button type="submit" name="ok" class="btn btn-success btn-sm" value="{{zeile.id}}" style="width: 20em" >{{zeile.name}},{{zeile.vorname}} - {{zeile.ausbildung.slug}}</button>
+                    <button type="submit" name="unaufmerksam" class="btn btn-warning btn-sm" value="{{zeile.id}}">Unaufmerksam</button>
+                    <button type="submit" name="abwesend" class="btn btn-danger btn-sm" value="{{zeile.id}}">Abwesend</button>
+                </li>
+        {% endfor %}
+        </ol>
+    {% else %}
+        <h2>Neues Thema</h2>
+        <ol>
+            <input type="text" name="text_neu"> 
+            <button type="submit" name="neu" class="btn btn-success btn-sm" style="width: 20em" >Neues Thema</button>
+        </ol>    
+    {% endif %}
+    {% if listen.1|length > 0 %}
+        <h2>Ok</h2>
+        <ol>
+        {% for zeile in listen.1 %}
+                <li>
+                    <input type="text" name="text_{{zeile.id}}"> 
+                    <button type="submit" name="nochmal" class="btn btn-success btn-sm" value="{{zeile.id}}" style="width: 20em" >{{zeile.name}},{{zeile.vorname}} - {{zeile.ausbildung.slug}}</button>
+                </li>
+        {% endfor %}
+        </ol>
+    {% endif %}
+    {% if listen.2|length > 0 %}
+        <h2>Unaufmerksam</h2>
+        <ol>
+        {% for zeile in listen.2 %}
+                <li>
+                    <input type="text" name="text_{{zeile.id}}"> 
+                    <button type="submit" name="zurueck" class="btn btn-warning btn-sm" value="{{zeile.id}}" style="width: 20em" >{{zeile.name}},{{zeile.vorname}} - {{zeile.ausbildung.slug}}</button>
+                </li>
+        {% endfor %}
+        </ol>
+    {% endif %}
+    {% if listen.3|length > 0 %}
+        <h2>Abwesend</h2>
+        <ol>
+        {% for zeile in listen.3 %}
+                <li>
+                    <input type="text" name="text_{{zeile.id}}"> 
+                    <button type="submit" name="anwesend" class="btn btn-danger btn-sm" value="{{zeile.id}}" style="width: 20em" >{{zeile.name}},{{zeile.vorname}} - {{zeile.ausbildung.slug}}</button>
+                </li>
+        {% endfor %}
+        </ol>
+    {% endif %}
+    </form>
+{% endblock content %}
