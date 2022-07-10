@@ -34,7 +34,7 @@ SECRET_KEY = 'sdfeh7w9&qdm+kdl_9)o=x5$3u%m@%ek#h9kaj32a1+=r_0!&w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['bfwstuttgart.de','127.0.0.1',]
+ALLOWED_HOSTS = ['bfwstuttgart.de','127.0.0.1','localhost']
 
 
 # Application definition

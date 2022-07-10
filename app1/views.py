@@ -383,7 +383,7 @@ def kanbanNeu(request):
                      modal="kanbanZusatzModal", type="button")
         name = FormInput("Name", value=vname)
         prio = FormSlider("Priorität", value=5)
-        kommentar = FormInput("Kommentar", value=vkommentar)
+        kommentar = FormInput("Kommentar", value=vkommentar, required=False)
         forms = (formZeile(name, auswahlBereich), formZeile(kommentar, prio),
                  '<hr />', FormBtnSave, FormBtnCancel, btnNeu,)
         return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Projekt erstellen", 'message': message, 'modals': ("modalKanbanZusatz.html",), "js": ("js/eigenes.js", )})
@@ -409,8 +409,8 @@ def kanbanEdt(request, id):
     if request.method == "GET":
         ds = KanbanProject.objects.get(id=id, user=request.user)
         name = FormInput("Name", value=ds.name)
-        kommentar = FormInput("Kommentar", value=ds.beschreibung)
-        auswahlBereich = FormAuswahl('Bereich', KanbanBereiche, value=ds.bereich)
+        kommentar = FormInput("Kommentar", value=ds.beschreibung, required=False)
+        auswahlBereich = FormAuswahl('Bereich', KanbanBereiche, value=ds.id)
         prio = FormSlider("Priorität", value=ds.prio)        
         forms = (formZeile(name,auswahlBereich), formZeile(kommentar, prio), '<hr />', FormBtnSave, FormBtnCancel, FormBtnRemove)
         return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Projekt ändern", 'message': message})
