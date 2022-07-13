@@ -11,6 +11,24 @@
 
         <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
         <title>{% block title %}BFW-Stuttgart{% endblock %}</title>
+        <script>
+            // DSGVO - Datenschutz-Hinweis
+            
+            window.addEventListener("DOMContentLoaded", function () {
+             {
+              document.getElementsByTagName("body")[0].appendChild(document.createElement("div")).setAttribute("id", "dsgvo_hinweis");
+              document.getElementById("dsgvo_hinweis").innerHTML = '<p>' +
+              'Diese Seite verwendet nur technisch notwendige Cookies. </p>' +
+              '<p><a href="https://de.wikipedia.org/wiki/Datenschutz-Grundverordnung" class="dsgvo_hinweis_button" target="_blank">Warum dieser Hinweis</a>' +
+              '<a href="javascript:akzeptieren();" class="dsgvo_hinweis_button">Muss halt</a></p>';
+             }
+            });
+            
+            function akzeptieren() {
+              
+              document.getElementById("dsgvo_hinweis").style.display="none";
+            }
+            </script>
     </head>
     <body>
         <div class="container">
