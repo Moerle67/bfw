@@ -772,3 +772,16 @@ def plan(request, gruppe, jahr, kw):
     print(plan)
     print(zeiten)
     return render(request, 'app1/base.html')
+
+@permission_required('app1.view_teilnehmer')
+def anwesenheit(request):
+    if request.method == "POST":
+        return redirect("/pr1/anwesenheit/"+request.POST["Gruppe"]+"/start")
+    gruppe = FormAuswahl("Gruppe",Gruppe, aktiv=True)
+    forms = (formZeile(gruppe), formLinie, FormBtnOk)
+    return render(request, 'app1/base_form.html', {"h1": "Anwesenheit Gruppe auswählen", "forms": forms, })
+
+@permission_required('app1.view_teilnehmer')
+def anwesenheit_start(request, gruppe):
+    print(gruppe)
+    return render(request, 'app1/base.html')
