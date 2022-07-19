@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, date, time
+from genericpath import exists
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import permission_required
@@ -783,5 +784,16 @@ def anwesenheit(request):
 
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_start(request, gruppe):
-    print(gruppe)
-    return render(request, 'app1/base.html')
+    if request.method == "POST":
+        gruppe = Gruppe.objects.get(id=request.POST["gruppe"])
+        teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
+        for tn in teilnehmer:
+            anwesend = "cbox_"+str(tn.id) in request.POST
+            anwesenheit = Anwesenheit(teilnehmer=tn, user=request.user, anwesend=anwesend)
+            anwesenheit.save()
+        print(request.POST)
+        return render(request, 'app1/base_form.html')
+    else:
+        gruppe = Gruppe.objects.get(id=gruppe)
+        teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
+        return render(request, 'app1/anwesenheit_start.html', {"gruppe": gruppe, "teilnehmer": teilnehmer})

@@ -200,3 +200,11 @@ class Plan(models.Model):
     farbe = models.ForeignKey(PlanFarbe, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.gruppe)+"/"+str(self.jahr)+"/"+str(self.kw)+"/"+str(self.tag)+"/"+str(self.einheit)+"/"+self.fach+"/"+str(self.ausbilder)+" - "+str(self.id)
+
+class Anwesenheit(models.Model):
+    teilnehmer = models.ForeignKey(Teilnehmer, on_delete=models.CASCADE)
+    datum = models.DateTimeField(auto_now=False, auto_now_add=True)
+    anwesend = models.BooleanField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    def __str__(self):
+        return str(self.teilnehmer)+", "+str(self.datum)+", "+str(self.anwesend)

@@ -17,5 +17,4 @@ admin.site.register(PlanZeiten)
 admin.site.register(Ausbilder)
 admin.site.register(Plan)
 admin.site.register(Raum)
-
-
+admin.site.register(Anwesenheit)
