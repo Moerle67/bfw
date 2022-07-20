@@ -56,5 +56,6 @@ urlpatterns = [
 
     path('anwesenheit/', views.anwesenheit, name = 'anwesenheit'),
     path('anwesenheit/<int:gruppe>/start', views.anwesenheit_start, name = 'anwesenheit_start'),
+    path('anwesenheit/<int:gruppe>', views.anwesenheit_laufend, name = 'anwesenheit_laufend'),
 
 ]

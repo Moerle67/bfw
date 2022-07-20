@@ -1,0 +1,16 @@
+﻿{% extends 'app1/base.html' %} {% block h1 %} Anwesenheit Beginn -
+{{gruppe.name}} {% endblock h1 %} {% block content %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="gruppe" value="{{gruppe.id}}" />
+    {% for zeile in teilnehmer %}
+        <div class="form-check form-switch">
+          <button type="submit" class="btn btn-success">Anwesend</button>
+          <button type="submit" class="btn btn-danger">Abwesend</button>
+            <label class="form-check-label" for="cbox_{{zeile.id}}">{{zeile.0.vorname}} {{zeile.0.name}} {{zeile.0.ausbildung.slug}}</label>
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Speichern</button>
+  </form>
+{% endblock content %}
