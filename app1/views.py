@@ -791,7 +791,7 @@ def anwesenheit_start(request, gruppe):
             anwesend = "cbox_"+str(tn.id) in request.POST
             anwesenheit = Anwesenheit(teilnehmer=tn, user=request.user, anwesend=anwesend)
             anwesenheit.save()
-            return redirect("/pr1/anwesenheit/"+str(gruppe.id))
+        return redirect("/pr1/anwesenheit/"+str(gruppe.id))
     else:
         gruppe = Gruppe.objects.get(id=gruppe)
         teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
@@ -799,13 +799,26 @@ def anwesenheit_start(request, gruppe):
 
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_laufend(request, gruppe):
-    liste = []
-    teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
-    for tn in teilnehmer:
-        satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
-        anwesend = satz.anwesend
-        liste.append((tn, anwesend))
-    print(liste)
-    return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste})
+    if request.method == "POST":
+        print(request.POST)
+        if request.POST["button"] == "weiter":
+            return redirect("/pr1/anwesenheit/"+str(gruppe))   
+        else:
+            tn = request.POST["button"]
+            # print(tn)
+            tn = Teilnehmer.objects.get(id=tn)  
+            satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
+            anwesend = not satz.anwesend
+            anwesenheit = Anwesenheit(teilnehmer=tn, user=request.user, anwesend=anwesend)
+            anwesenheit.save()
+            return redirect("/pr1/anwesenheit/"+str(gruppe))   
+    else:
+        liste = []
+        teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
+        for tn in teilnehmer:
+            satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
+            anwesend = satz.anwesend
+            liste.append((tn, anwesend))
+        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste})
     
 
