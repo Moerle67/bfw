@@ -802,7 +802,7 @@ def anwesenheit_laufend(request, gruppe):
     if request.method == "POST":
         print(request.POST)
         if request.POST["button"] == "weiter":
-            return redirect("/pr1/anwesenheit/"+str(gruppe))   
+            return redirect("/pr1/anwesenheit/auswertung/"+str(gruppe))   
         else:
             tn = request.POST["button"]
             # print(tn)
@@ -821,4 +821,31 @@ def anwesenheit_laufend(request, gruppe):
             liste.append((tn, anwesend))
         return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste})
     
+
+@permission_required('app1.view_teilnehmer')
+def anwesenheit_auswertung_gruppe(request, gruppe):
+    date_akt = date.today()
+    if request.method == "POST":
+        date_akt = datetime.strptime(request.POST["Datum"], '%Y-%m-%d').date()
+    gruppe_frm = FormAuswahl("Gruppe", Gruppe, gruppe)
+    datum_frm = FormInput("Datum",type="date", value = str(date_akt))
+    forms = (formZeile(gruppe_frm, datum_frm), formLinie, FormBtnOk)
+    teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
+    liste = []
+    for tn in teilnehmer:
+        liste2 = []
+        liste2.append(tn)
+        anwesenheit = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date_akt)
+        #print(anwesenheit)
+        for anwesend in anwesenheit:
+            if anwesend.anwesend:
+                status = "Anwesend"
+            else:
+                status = "Abwesend"
+            liste2.append((str(anwesend.datum), status))
+        liste.append(liste2)
+    print(liste)
+    return render(request, 'app1/base_form.html', {"h1": "Auswertung Anwesenheit", "forms": forms, })
+
+
 

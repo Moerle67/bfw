@@ -7,7 +7,7 @@
     {% for zeile in teilnehmer %}
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="cbox_{{zeile.id}}" name="cbox_{{zeile.id}}">
-            <label class="form-check-label" for="cbox_{{zeile.id}}">{{zeile.vorname}} {{zeile.name}} {{zeile.ausbildung.slug}}</label>
+            <label class="form-check-label zeile_tn" for="cbox_{{zeile.id}}">{{zeile.vorname}} {{zeile.name}} {{zeile.ausbildung.slug}}</label>
         </div>
     {% endfor %}
     <button type="submit" class="btn btn-success">Speichern</button>

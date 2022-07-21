@@ -6,15 +6,11 @@
     <input type="hidden" name="gruppe" value="{{gruppe.id}}" />
     {% for zeile in teilnehmer %}
         <div class="form-check form-switch">
-          {% if zeile.1 %}
-            <button type="submit" class="btn btn-success" name="button" value="{{zeile.0.id}}">Anwesend</button>
-          {% else %}
-            <button type="submit" class="btn btn-danger" name="button" value="{{zeile.0.id}}">Abwesend</button>
-          {% endif %}
-          <label class="form-check-label" for="cbox_{{zeile.id}}">{{zeile.0.vorname}} {{zeile.0.name}} {{zeile.0.ausbildung.slug}}</label>
+          <button type="submit" class="btn btn-success">Anwesend</button>
+          <button type="submit" class="btn btn-danger">Abwesend</button>
+            <label class="form-check-label" for="cbox_{{zeile.id}}">{{zeile.0.vorname}} {{zeile.0.name}} {{zeile.0.ausbildung.slug}}</label>
         </div>
     {% endfor %}
-    <br />
-    <button type="submit" class="btn btn-success" name="button" value="weiter">Auswertung</button>
+    <button type="submit" class="btn btn-success">Speichern</button>
   </form>
 {% endblock content %}

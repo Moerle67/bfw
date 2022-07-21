@@ -118,3 +118,7 @@ a.dsgvo_hinweis_button:active {
     background-color: darkred;
     color: rgb(255, 255, 255);
 }
+
+.zeile_tn {
+    margin-left: 5em;
+}
