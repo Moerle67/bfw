@@ -799,6 +799,7 @@ def anwesenheit_start(request, gruppe):
 
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_laufend(request, gruppe):
+    gruppe_ds = Gruppe.objects.get(id=gruppe)
     if request.method == "POST":
         print(request.POST)
         if request.POST["button"] == "weiter":
