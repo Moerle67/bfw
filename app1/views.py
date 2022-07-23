@@ -233,7 +233,7 @@ def tnDetail(request, tn_id):
     name = FormInput("Name", value=vname)
     vorname = FormInput("Vorname", value=vvorname)
     ausbildung = FormAuswahl("Ausbildung", Ausbildung, value=vausbildung)
-    email = FormInput("Email", type="mail", value=vemail)
+    email = FormInput("Email", type="mail", value=vemail, required=False)
     gruppe = FormAuswahl("Gruppe", Gruppe, value=vgruppe)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
     komment = FormInput("Kommentar", required=False)
