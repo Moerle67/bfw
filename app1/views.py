@@ -826,9 +826,10 @@ def anwesenheit_laufend(request, gruppe):
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_auswertung_gruppe(request, gruppe):
     date_akt = date.today()
-    gruppe_ds = Gruppe.objects.get(id=gruppe)
     if request.method == "POST":
         date_akt = datetime.strptime(request.POST["Datum"], '%Y-%m-%d').date()
+        gruppe = request.POST["Gruppe"]
+    gruppe_ds = Gruppe.objects.get(id=gruppe)
     gruppe_frm = FormAuswahl("Gruppe", Gruppe, gruppe)
     datum_frm = FormInput("Datum",type="date", value = str(date_akt))
     forms = (formZeile(gruppe_frm, datum_frm), formLinie, FormBtnOk)
