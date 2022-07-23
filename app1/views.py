@@ -826,6 +826,7 @@ def anwesenheit_laufend(request, gruppe):
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_auswertung_gruppe(request, gruppe):
     date_akt = date.today()
+    gruppe_ds = Gruppe.objects.get(id=gruppe)
     if request.method == "POST":
         date_akt = datetime.strptime(request.POST["Datum"], '%Y-%m-%d').date()
     gruppe_frm = FormAuswahl("Gruppe", Gruppe, gruppe)
@@ -835,7 +836,6 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
     liste = []
     for tn in teilnehmer:
         liste2 = []
-        liste2.append(tn)
         anwesenheit = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date_akt)
         #print(anwesenheit)
         for anwesend in anwesenheit:
@@ -843,10 +843,11 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
                 status = "Anwesend"
             else:
                 status = "Abwesend"
-            liste2.append((str(anwesend.datum), status))
-        liste.append(liste2)
+            liste2.append((anwesend.datum.strftime("%H:%M"), status))
+        liste.append((tn,liste2))
     print(liste)
-    return render(request, 'app1/base_form.html', {"h1": "Auswertung Anwesenheit", "forms": forms, })
+    return render(request, 'app1/ausbildung_auswertung.html', {"h1": "Auswertung Anwesenheit", "forms": forms, 
+    "liste": liste, "datum": date_akt, "gruppe": gruppe_ds})
 
 
 

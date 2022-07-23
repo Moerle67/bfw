@@ -1,14 +1,17 @@
-﻿{% extends 'app1/base.html' %}
+﻿{% extends 'app1/base_form.html' %}
 
 {% block h1 %}
-Ausbilungsfächer
+Auswertung
 {% endblock h1 %}
 
 {% block zusatz %}
-<ol>
-    <li><a href="/pr1/fach/neu">Neues Fach erfassen</a></li>
-    {% for zeile in liste %}
-        <li><a href="/pr1/fach/{{zeile.slug}}"> {{ zeile }}</a></li>
+    <h2>Auswertung Anwesenheit {{gruppe}} - {{datum}}</h2>
+    {% for tn in liste %}
+        <h3>{{tn.0.name}}, {{tn.0.vorname}}</h3>
+        <p>
+        {% for tn_zeile in tn.1 %}
+            {{tn_zeile.0}} - {{tn_zeile.1}},
+        {% endfor %}
+        </p>
     {% endfor %}
-</ol>
 {% endblock zusatz %}

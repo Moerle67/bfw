@@ -14,6 +14,6 @@
             <label class="form-check-label" for="cbox_{{zeile.id}}">{{zeile.0.vorname}} {{zeile.0.name}} {{zeile.0.ausbildung.slug}}</label>
         </div>
     {% endfor %}
-    <button type="submit" class="btn btn-success">Speichern</button>
+    <button type="submit" class="btn btn-success" name="button" value="weiter">Auswerten</button>
   </form>
 {% endblock content %}
