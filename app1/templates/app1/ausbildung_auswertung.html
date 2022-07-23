@@ -7,10 +7,9 @@ Auswertung
 {% block zusatz %}
     <h2>Auswertung Anwesenheit {{gruppe}} - {{datum}}</h2>
     {% for tn in liste %}
-        <h3>{{tn.0.name}}, {{tn.0.vorname}}</h3>
-        <p>
+        <p><strong>{{tn.0.name}}, {{tn.0.vorname}}</strong> - 
         {% for tn_zeile in tn.1 %}
-            {{tn_zeile.0}} - {{tn_zeile.1}},
+            {% if tn_zeile.1 == "Abwesend" %} &#128308; {% else %} &#128994; {% endif %} {{tn_zeile.0}},
         {% endfor %}
         </p>
     {% endfor %}
