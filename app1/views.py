@@ -845,7 +845,6 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
                 status = "Abwesend"
             liste2.append((anwesend.datum.strftime("%H:%M"), status))
         liste.append((tn,liste2))
-    print(liste)
     return render(request, 'app1/ausbildung_auswertung.html', {"h1": "Auswertung Anwesenheit", "forms": forms, 
     "liste": liste, "datum": date_akt, "gruppe": gruppe_ds})
 
