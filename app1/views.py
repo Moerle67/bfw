@@ -284,6 +284,7 @@ def tnNeu(request):
     ausbildung = FormAuswahl("Ausbildung", Ausbildung, value=vausbildung)
     email = FormInput("Email", type="mail", value=vemail, required=False)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
+    print(sgruppe)
     gruppe = FormAuswahl("Gruppe", Gruppe, value=sgruppe)
     btnUeber = FormBtn("Mail übertragen","mail", formnovalidate=True)
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
@@ -830,8 +831,8 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
         date_akt = datetime.strptime(request.POST["Datum"], '%Y-%m-%d').date()
         gruppe = request.POST["Gruppe"]
     gruppe_ds = Gruppe.objects.get(id=gruppe)
-    gruppe_frm = FormAuswahl("Gruppe", Gruppe, gruppe)
-    datum_frm = FormInput("Datum",type="date", value = str(date_akt))
+    gruppe_frm = FormAuswahl("Gruppe", Gruppe, gruppe, submit=True)
+    datum_frm = FormInput("Datum",type="date", value = str(date_akt), submit=True)
     forms = (formZeile(gruppe_frm, datum_frm), formLinie, FormBtnOk)
     teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
     liste = []

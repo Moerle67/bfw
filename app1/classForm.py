@@ -4,17 +4,21 @@ class FormInput:
     required = True
     readonly = False
     disabled = False
-    def __init__(self, label, value="", type="text", required = "True", disabled=False, readonly=False):
+    def __init__(self, label, value="", type="text", required = "True", disabled=False, readonly=False, submit=False):
         self.label = label
         self.value = value
         self.type = type
         self.required = required
         self.disabled = disabled
         self.readonly = readonly
+        self.submit = submit
 
     def __str__(self):
         antwort = '<label for="'+self.label+'">'+self.label+'</label>\n'
-        antwort += '<input type="'+self.type+'" class="form-control" id="'+self.label+'" value="'+self.value
+        antwort += '<input '
+        if self.submit:
+            antwort+= ' onchange="this.form.submit()" '
+        antwort += 'type="'+self.type+'" class="form-control" id="'+self.label+'" value="'+self.value
         antwort += '" name="'+self.label+'"'
         if self.required: 
             antwort += " required"
@@ -65,20 +69,28 @@ class FormAuswahl:
     liste = ""
     value = ""
     name = ""
-    def __init__(self, name, liste, value=0, aktiv=True):
-           self.liste = liste
-           self.value = value
-           self.name = name
-           self.aktiv = aktiv
+    def __init__(self, name, liste, value=0, aktiv=True, submit=False):
+            self.liste = liste
+            self.submit = submit
+            try:
+                self.value = int(value)
+            except:
+                self.value = -1
+            self.name = name
+            self.aktiv = aktiv
     def __str__(self):
         if self.aktiv:
             daten = self.liste.objects.filter(aktiv=True)
         else:
             daten = self.liste.objects.filter()
         antwort = '\n<label for="'+self.name+'">'+self.name+': </label>\n'
-        antwort += '<select name="'+self.name+'" class="form-control">\n'
+        antwort += '<select '
+        if self.submit:
+            antwort+= ' onchange="this.form.submit()" '
+        antwort += 'name="'+self.name+'" class="form-control">\n'
         for zeile in daten:
             antwort += '<option value="'+str(zeile.id)+'"'
+            print(self.name, self.value, zeile.id)
             if zeile.id == self.value:
                 antwort += "selected "
             antwort +='>'+str(zeile)+'</option>\n'
