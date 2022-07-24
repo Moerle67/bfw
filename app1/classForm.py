@@ -90,7 +90,6 @@ class FormAuswahl:
         antwort += 'name="'+self.name+'" class="form-control">\n'
         for zeile in daten:
             antwort += '<option value="'+str(zeile.id)+'"'
-            print(self.name, self.value, zeile.id)
             if zeile.id == self.value:
                 antwort += "selected "
             antwort +='>'+str(zeile)+'</option>\n'
