@@ -821,6 +821,7 @@ def anwesenheit_laufend(request, gruppe):
         teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
         gruppe_fm = FormAuswahl("Gruppe", Gruppe, gruppe, submit=True, label=False )
         form = (gruppe_fm)
+        time_old = False
         for tn in teilnehmer:
             satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
             if satz:
@@ -832,25 +833,41 @@ def anwesenheit_laufend(request, gruppe):
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_auswertung_gruppe(request, gruppe):
     date_akt = date.today()
+    max_lenght = 15
     if request.method == "POST":
         date_akt = datetime.strptime(request.POST["Datum"], '%Y-%m-%d').date()
         gruppe = request.POST["Gruppe"]
+        max_lenght = int(request.POST["Minimum"])
+    print(max_lenght)
     gruppe_ds = Gruppe.objects.get(id=gruppe)
     gruppe_frm = FormAuswahl("Gruppe", Gruppe, gruppe, submit=True)
     datum_frm = FormInput("Datum",type="date", value = str(date_akt), submit=True)
-    forms = (formZeile(gruppe_frm, datum_frm), formLinie, FormBtnOk)
+    max_lenght_fm = FormInput("Minimum", value=str(max_lenght), type="number", submit=True)
+    forms = (formZeile(gruppe_frm, datum_frm, max_lenght_fm), formLinie, FormBtnOk)
     teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
     liste = []
     for tn in teilnehmer:
         liste2 = []
+        time_old = False
         anwesenheit = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date_akt)
         #print(anwesenheit)
         for anwesend in anwesenheit:
-            if anwesend.anwesend:
-                status = "Anwesend"
+            if not time_old:
+                time_old = anwesend.datum
+                if anwesend.anwesend:
+                    status = "Anwesend"
+                else:
+                    status = "Abwesend"
+                liste2.append((anwesend.datum.strftime("%H:%M"), status, anwesend.user))
             else:
-                status = "Abwesend"
-            liste2.append((anwesend.datum.strftime("%H:%M"), status, anwesend.user))
+                time_diff = (anwesend.datum - time_old).total_seconds() / 60
+                time_old=anwesend.datum
+                if time_diff>=max_lenght:
+                    if anwesend.anwesend:
+                        status = "Anwesend"
+                    else:
+                        status = "Abwesend"
+                    liste2.append((anwesend.datum.strftime("%H:%M"), status, anwesend.user))
         liste.append((tn,liste2))
     return render(request, 'app1/ausbildung_auswertung.html', {"h1": "Auswertung Anwesenheit", "forms": forms, 
     "liste": liste, "datum": date_akt, "gruppe": gruppe_ds})
