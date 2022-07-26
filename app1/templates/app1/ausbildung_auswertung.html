@@ -7,10 +7,12 @@ Auswertung
 {% block zusatz %}
     <h2>Auswertung Anwesenheit <a href="../../grp/{{gruppe.id}}" target="__blank">{{gruppe}}</a> - {{datum}}</h2>
     {% for tn in liste %}
-        <p><strong><a href="../../tn/{{tn.0.id}}" target="__blank">{{tn.0.name}}, {{tn.0.vorname}}</a></strong> - 
+        <p ><strong><a href="../../tn/{{tn.0.id}}" target="__blank">{{tn.0.name}}, {{tn.0.vorname}}</a></strong> -  
         {% for tn_zeile in tn.1 %}
-            {% if tn_zeile.1 == "Abwesend" %} &#128308; {% else %} &#128994; {% endif %} {{tn_zeile.0}},
-        {% endfor %}
+            <span title="{{tn_zeile.2}}">
+                {% if tn_zeile.1 == "Abwesend" %} &#128308; {% else %} &#128994; {% endif %} {{tn_zeile.0}},
+            </span>        
+            {% endfor %}
         </p>
     {% endfor %}
 {% endblock zusatz %}
