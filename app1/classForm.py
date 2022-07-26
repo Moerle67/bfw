@@ -69,9 +69,10 @@ class FormAuswahl:
     liste = ""
     value = ""
     name = ""
-    def __init__(self, name, liste, value=0, aktiv=True, submit=False):
+    def __init__(self, name, liste, value=0, aktiv=True, submit=False, label=True):
             self.liste = liste
             self.submit = submit
+            self.label = label
             try:
                 self.value = int(value)
             except:
@@ -83,7 +84,9 @@ class FormAuswahl:
             daten = self.liste.objects.filter(aktiv=True)
         else:
             daten = self.liste.objects.filter()
-        antwort = '\n<label for="'+self.name+'">'+self.name+': </label>\n'
+        antwort=""    
+        if self.label:
+            antwort = '\n<label for="'+self.name+'">'+self.name+': </label>\n'
         antwort += '<select '
         if self.submit:
             antwort+= ' onchange="this.form.submit()" '

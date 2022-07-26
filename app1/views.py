@@ -802,7 +802,9 @@ def anwesenheit_start(request, gruppe):
 def anwesenheit_laufend(request, gruppe):
     gruppe_ds = Gruppe.objects.get(id=gruppe)
     if request.method == "POST":
-        print(request.POST)
+        if "button" not in request.POST:
+            gruppe = request.POST["Gruppe"]
+            return redirect("/pr1/anwesenheit/"+str(gruppe))
         if request.POST["button"] == "weiter":
             return redirect("/pr1/anwesenheit/auswertung/"+str(gruppe))   
         else:
@@ -817,11 +819,14 @@ def anwesenheit_laufend(request, gruppe):
     else:
         liste = []
         teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
+        gruppe_fm = FormAuswahl("Gruppe", Gruppe, gruppe, submit=True, label=False )
+        form = (gruppe_fm)
         for tn in teilnehmer:
             satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
-            anwesend = satz.anwesend
-            liste.append((tn, anwesend))
-        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste})
+            if satz:
+                anwesend = satz.anwesend
+                liste.append((tn, anwesend))
+        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste, "form": form})
     
 
 @permission_required('app1.view_teilnehmer')
