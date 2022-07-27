@@ -850,24 +850,25 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
         liste2 = []
         time_old = False
         anwesenheit = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date_akt)
-        #print(anwesenheit)
+        print(tn)
         for anwesend in anwesenheit:
             if not time_old:
                 time_old = anwesend.datum
-                if anwesend.anwesend:
-                    status = "Anwesend"
-                else:
-                    status = "Abwesend"
-                liste2.append((anwesend.datum.strftime("%H:%M"), status, anwesend.user))
             else:
                 time_diff = (anwesend.datum - time_old).total_seconds() / 60
                 time_old=anwesend.datum
-                if time_diff>=max_lenght:
-                    if anwesend.anwesend:
-                        status = "Anwesend"
-                    else:
-                        status = "Abwesend"
-                    liste2.append((anwesend.datum.strftime("%H:%M"), status, anwesend.user))
+                print(anwesend.anwesend, liste2[-1][1])
+                if anwesend.anwesend and liste2[-1][1]=="Abwesend" and time_diff<=max_lenght:
+                    print("gelöscht zu kurz")
+                    del liste2[-1]
+                elif (anwesend.anwesend and liste2[-1][1]=="Anwesend") or (not anwesend.anwesend and liste2[-1][1]=="Abwesend"):
+                    print("ignoriert doppelt")
+                    continue
+            if anwesend.anwesend:
+                status = "Anwesend"
+            else:
+                status = "Abwesend"
+            liste2.append((anwesend.datum.strftime("%H:%M"), status, anwesend.user))
         liste.append((tn,liste2))
     return render(request, 'app1/ausbildung_auswertung.html', {"h1": "Auswertung Anwesenheit", "forms": forms, 
     "liste": liste, "datum": date_akt, "gruppe": gruppe_ds})
