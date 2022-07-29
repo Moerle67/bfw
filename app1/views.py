@@ -254,6 +254,10 @@ def tnNeu(request):
             sgruppe=int(request.GET["gruppe"])
         else:
             sgruppe=-1
+        if "ausbildung" in request.GET:
+            vausbildung=int(request.GET["ausbildung"])
+        else:
+            vausbildung=-1
     else:
         vname = request.POST['Name']
         vvorname = request.POST['Vorname']
@@ -278,9 +282,10 @@ def tnNeu(request):
             if request.POST['button'] == "save":
                 return redirect("/pr1/tn")
             else:
-                return redirect("/pr1/tn/neu?gruppe="+str(vgruppe.id))
+                return redirect("/pr1/tn/neu?gruppe="+str(vgruppe.id)+"&ausbildung="+str(vausbildung))
     name = FormInput("Name", value=vname)
     vorname = FormInput("Vorname", value=vvorname)
+    print(vausbildung)
     ausbildung = FormAuswahl("Ausbildung", Ausbildung, value=vausbildung)
     email = FormInput("Email", type="mail", value=vemail, required=False)
     mobil = FormInput("Telefon", type="tel", value=vmobil, required=False)
