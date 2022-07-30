@@ -186,19 +186,19 @@ def tnAllgGrp(request, grp_id):
 @permission_required('app1.view_teilnehmer')
 def tnDetail(request, tn_id):
     message = ""
-    ds = Teilnehmer.objects.get(id=str(tn_id))
+    tn_ds = Teilnehmer.objects.get(id=str(tn_id))
     if request.method == "GET":
-        vname = ds.name
-        vvorname = ds.vorname
-        vausbildung = ds.ausbildung.id
-        vemail = ds.email
-        vmobil = ds.mobil
-        komments = TnInfo.objects.filter(tn=ds, aktiv=True).order_by("-zeitpunkt")
-        projekte = ProjekteTN.objects.filter(teilnehmer=ds, offen=True).order_by("bis")
-        if ds.gruppe != None:
-            vgruppe = ds.gruppe.id
+        vname = tn_ds.name
+        vvorname = tn_ds.vorname
+        vausbildung = tn_ds.ausbildung.id
+        vemail = tn_ds.email
+        vmobil = tn_ds.mobil
+        komments = TnInfo.objects.filter(tn=tn_ds, aktiv=True).order_by("-zeitpunkt")
+        projekte = ProjekteTN.objects.filter(teilnehmer=tn_ds, offen=True).order_by("bis")
+        if tn_ds.gruppe != None:
+            vgruppe = tn_ds.gruppe.id
         else:
-            vgruppe = 0
+            vgruppe = -1
     else:
         vname = request.POST['Name']
         vvorname =request.POST['Vorname']
@@ -239,6 +239,9 @@ def tnDetail(request, tn_id):
     komment = FormInput("Kommentar", required=False)
     btnKomm = FormBtn("Kommentar speichern", "comment")
     btn_del = FormBtn("Teilnehmer löschen", "delete", color="danger")
+    anwesend_liste = Anwesenheit.objects.filter(teilnehmer=tn_ds).order_by('datum')
+    von = anwesend_liste[0].datum.date()
+    bis = anwesend_liste[len(anwesend_liste)-1].datum.date()
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
              "<hr />", FormBtnSave, FormBtnCancel, btn_del,formLinie, komment, formLinie, btnKomm)
 
@@ -852,10 +855,9 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
     teilnehmer = Teilnehmer.objects.filter(aktiv=True, gruppe=gruppe)
     liste = []
     for tn in teilnehmer:
+        anwesenheit = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date_akt)
         liste2 = []
         time_old = False
-        anwesenheit = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date_akt)
-        print(tn)
         for anwesend in anwesenheit:
             if not time_old:
                 time_old = anwesend.datum
@@ -863,17 +865,17 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
                 time_diff = (anwesend.datum - time_old).total_seconds() / 60
                 time_old=anwesend.datum
                 print(anwesend.anwesend, liste2[-1][1])
-                if anwesend.anwesend and liste2[-1][1]=="Abwesend" and time_diff<=max_lenght:
+                if anwesend.anwesend and not liste2[-1][1] and time_diff<=max_lenght:
                     print("gelöscht zu kurz")
                     del liste2[-1]
-                elif (anwesend.anwesend and liste2[-1][1]=="Anwesend") or (not anwesend.anwesend and liste2[-1][1]=="Abwesend"):
+                elif (anwesend.anwesend == liste2[-1][1]):
                     print("ignoriert doppelt")
                     continue
             if anwesend.anwesend:
                 status = "Anwesend"
             else:
                 status = "Abwesend"
-            liste2.append((anwesend.datum.strftime("%H:%M"), status, anwesend.user))
+            liste2.append((anwesend.datum.strftime("%H:%M"), anwesend.anwesend, anwesend.user))
         liste.append((tn,liste2))
     return render(request, 'app1/ausbildung_auswertung.html', {"h1": "Auswertung Anwesenheit", "forms": forms, 
     "liste": liste, "datum": date_akt, "gruppe": gruppe_ds})

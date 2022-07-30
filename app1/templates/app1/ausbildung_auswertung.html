@@ -10,7 +10,7 @@ Auswertung
         <p ><strong><a href="../../tn/{{tn.0.id}}" target="__blank">{{tn.0.name}}, {{tn.0.vorname}}</a></strong> -  
         {% for tn_zeile in tn.1 %}
             <span title="{{tn_zeile.2}}">
-                {% if tn_zeile.1 == "Abwesend" %} &#128308; {% else %} &#128994; {% endif %} {{tn_zeile.0}},
+                {% if not tn_zeile.1 %} &#128308; {% else %} &#128994; {% endif %} {{tn_zeile.0}},
             </span>        
             {% endfor %}
         </p>
