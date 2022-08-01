@@ -242,11 +242,14 @@ def tnDetail(request, tn_id):
     anwesend_liste = Anwesenheit.objects.filter(teilnehmer=tn_ds).order_by('datum')
     von = anwesend_liste[0].datum.date()
     bis = anwesend_liste[len(anwesend_liste)-1].datum.date()
+    f_von = FormInput("Von", value=str(von), type="date", submit=True)
+    f_bis = FormInput("Von", value=str(bis), type="date", submit=True)
     forms = (formZeile(name, vorname), formZeile(ausbildung, gruppe), formZeile(email, mobil),
              "<hr />", FormBtnSave, FormBtnCancel, btn_del,formLinie, komment, formLinie, btnKomm)
+    form2 = (formZeile(f_von, f_bis))
 
     return render(request, 'app1/form_tnDetail.html', {'forms': forms, 'h1': "Teilnehmerinfo", 'message': message, 
-    "komments": komments })
+    "komments": komments, "form2": form2 })
 
 @permission_required('app1.view_teilnehmer')
 def tnNeu(request):

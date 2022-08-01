@@ -12,5 +12,10 @@
 </div>
 </ul>
 {% endtimezone %}
-
+<form method="POST">
+    {% csrf_token %}
+    {% for form in form2 %}
+        {{ form|safe}}
+    {% endfor %}
+</form>
 {% endblock zusatz %} 
