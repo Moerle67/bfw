@@ -4,18 +4,32 @@
 {% timezone "Europe/Berlin" %}
 <ul>
 <div class="row">
-    <div class="col-sm-6">                     
-        {% for zeile in komments %}
+    <div class="col-sm-6">
+        <details>
+            <summary>Kommentare</summary>                 
+            <ul>
+                {% for zeile in komments %}
             <li>{{zeile.user.username}}, {{zeile.zeitpunkt}}, {{zeile.info}}</li>
         {% endfor %}
+            </ul>
+        </details>
     </div>
-</div>
+    <br />
+    <details>
+        <summary>Anwesenheit</summary>
+        <ul>
+        {% for day in liste2 %}
+            <li>{{day.0}}
+            {% for tn_zeile in day.1 %}
+            <span title="{{tn_zeile.2}}">
+                {% if not tn_zeile.1 %} &#128308; {% else %} &#128994; {% endif %} {{tn_zeile.0}},
+            </span>        
+            {% endfor %}
+        </li>    
+        {% endfor %}
+        </ul>        
+    </details
+    </div>
 </ul>
 {% endtimezone %}
-<form method="POST">
-    {% csrf_token %}
-    {% for form in form2 %}
-        {{ form|safe}}
-    {% endfor %}
-</form>
 {% endblock zusatz %} 
