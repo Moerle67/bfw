@@ -197,8 +197,11 @@ def tnDetail(request, tn_id):
     komments = TnInfo.objects.filter(
         tn=tn_ds, aktiv=True).order_by("-zeitpunkt")
     if request.method == "GET":
-        von = anwesend_liste[0].datum.date()
-        bis = anwesend_liste[len(anwesend_liste)-1].datum.date()
+        if len(anwesend_liste)>0:
+            von = anwesend_liste[0].datum.date()
+            bis = anwesend_liste[len(anwesend_liste)-1].datum.date()
+        else:
+            von = bis = date.today().strftime("%Y-%m-%d")
         vname = tn_ds.name
         vvorname = tn_ds.vorname
         vausbildung = tn_ds.ausbildung.id
