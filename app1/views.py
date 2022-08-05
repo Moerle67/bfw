@@ -216,6 +216,7 @@ def tnDetail(request, tn_id):
     else:
         von = request.POST['Von']
         bis = request.POST['Bis']
+        bis = datetime.strptime(bis, '%Y-%m-%d')
         vname = request.POST['Name']
         vvorname = request.POST['Vorname']
         vausbildung = Ausbildung.objects.get(
@@ -259,7 +260,9 @@ def tnDetail(request, tn_id):
     btnKomm = FormBtn("Kommentar speichern", "comment")
     btn_del = FormBtn("Teilnehmer löschen", "delete", color="danger")
     f_von = FormInput("Von", value=str(von), type="date", submit=True)
-    f_bis = FormInput("Bis", value=str(bis), type="date", submit=True)
+    f_bis = FormInput("Bis", value=str(bis.strftime("%Y-%m-%d")), type="date", submit=True)
+    # Bis eins hochzählen
+    bis  = bis + timedelta(days=1)
     anwesend_liste = anwesend_liste.exclude(datum__lt=von)
     anwesend_liste = anwesend_liste.exclude(datum__gt=bis)
     liste_anw = []
