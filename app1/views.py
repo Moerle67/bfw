@@ -201,7 +201,8 @@ def tnDetail(request, tn_id):
             von = anwesend_liste[0].datum.date()
             bis = anwesend_liste[len(anwesend_liste)-1].datum.date()
         else:
-            von = bis = date.today().strftime("%Y-%m-%d")
+            # von = bis = date.today().strftime("%Y-%m-%d")
+            von = bis = date.today()
         vname = tn_ds.name
         vvorname = tn_ds.vorname
         vausbildung = tn_ds.ausbildung.id
