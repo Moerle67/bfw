@@ -160,12 +160,12 @@ class Mitarbeit(models.Model):
         return self.tn.name + ", "+ str(self.zeit)
 
 class Essenanmeldung(models.Model):
-    gruppe = models.ForeignKey(Gruppe, on_delete=models.RESTRICT)
+    gruppe = models.ForeignKey(Gruppe, on_delete=models.CASCADE)
     datum = models.DateField(auto_now=False, auto_now_add=False)
     gemeldet = models.DateTimeField(auto_now=False, auto_now_add=True)
     anzahl_tn = models.IntegerField()
     anzahl_essen = models.IntegerField()
-    gemeldet_durch = models.ForeignKey(User, on_delete=models.RESTRICT)
+    gemeldet_durch = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class PlanFarbe(models.Model):
     farbe = models.CharField(max_length=50)

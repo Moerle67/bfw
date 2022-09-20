@@ -252,7 +252,7 @@ def tnDetail(request, tn_id):
                 ds.gruppe = vgruppe
                 ds.save()
                 # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-                return redirect("/pr1/tn")
+                return redirect("/pr1/tn/lst/"+str(vgruppe.id))
 
     name = FormInput("Name", value=vname)
     vorname = FormInput("Vorname", value=vvorname)
