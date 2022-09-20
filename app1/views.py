@@ -225,7 +225,9 @@ def tnDetail(request, tn_id):
         vemail = request.POST['Email']
         vmobil = request.POST['Telefon']
         vgruppe = Gruppe.objects.get(id=request.POST['Gruppe'])
-        if 'button' in request:
+        print(request.POST)
+        if 'button' in request.POST:
+            print(request.POST['button'])
             if request.POST['button'] == "cancel":
                 return redirect("/pr1/tn")
             if request.POST['button'] == "comment":
@@ -240,6 +242,7 @@ def tnDetail(request, tn_id):
                 ds.save()
                 return redirect("/pr1/tn")
             else:
+                print("Save")
                 ds = Teilnehmer.objects.get(id=str(tn_id))
                 ds.name = vname
                 ds.vorname = vvorname

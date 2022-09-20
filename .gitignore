@@ -1,4 +1,3 @@
-*.sqlite3
 .vscode
 ./bfw/__pycache__
 *.pyc
