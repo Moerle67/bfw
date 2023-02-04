@@ -34,4 +34,8 @@ function onNeuKanbanBereich() {
 function prompt() { 
   var doc = prompt("Please enter some text", 
       "GeeksforGeeks"); 
-} 
+}
+
+function add_comment() {
+  alert("Never Gonna Give You Up");
+}
