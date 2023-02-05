@@ -18,7 +18,7 @@
           {% else %}
             <button type="submit" class="btn btn-danger" name="button" value="{{zeile.0.id}}">Abwesend</button>
           {% endif %}
-            <button type="button" class"btn btn-outline-primary">{{zeile.0.name}}, {{zeile.0.vorname}} - {{zeile.0.ausbildung.slug}}</button>
+            <button type="button" class"btn btn-outline-primary" onclick="add_comment('Kommentar',{{zeile.0.id}},'{{zeile.0.name}}, {{zeile.0.vorname}}', '{{gruppe}}')">{{zeile.0.name}}, {{zeile.0.vorname}} - {{zeile.0.ausbildung.slug}}</button>
         </div>
     {% endfor %}
     <button type="submit" class="btn btn-info" name="button" value="weiter">Auswerten</button>

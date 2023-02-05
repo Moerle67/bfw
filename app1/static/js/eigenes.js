@@ -31,11 +31,10 @@ function onNeuKanbanBereich() {
   window.location=send
 }
 
-function prompt() { 
-  var doc = prompt("Please enter some text", 
-      "GeeksforGeeks"); 
-}
-
-function add_comment() {
-  alert("Never Gonna Give You Up");
+function add_comment(question, id, name, gruppe) {
+  let comment = prompt(question+ " zu "+name, "Anmerkung");
+  // comment = comment.replaceAll(" ","_");
+  var send = "/pr1/anwesenheit/add_comment/"+id+"/"+comment+"/"+gruppe
+  
+  window.location=send
 }

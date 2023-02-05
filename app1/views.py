@@ -928,8 +928,17 @@ def anwesenheit_laufend(request, gruppe):
             if satz:
                 anwesend = satz.anwesend
                 liste.append((tn, anwesend))
-        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste, "form": form})
+        js = ("js/eigenes.js",)
+        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste, "form": form, "js": js})
 
+@permission_required('app1.view_teilnehmer')
+def anwesenheit_comment(request, id, comment, gruppe):
+    tn = Teilnehmer.objects.get(id=id)
+    print(tn.name)
+    print(comment)
+    comment = TnInfo(tn=tn, info=comment, user=request.user)
+    comment.save()
+    return redirect("/pr1/anwesenheit/"+str(gruppe))
 
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_auswertung_gruppe(request, gruppe):

@@ -19,4 +19,3 @@ admin.site.register(Plan)
 admin.site.register(Raum)
 
 admin.site.register(Anwesenheit)
-admin.site.register(Add)

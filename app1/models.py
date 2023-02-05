@@ -209,10 +209,3 @@ class Anwesenheit(models.Model):
     def __str__(self):
         return str(self.teilnehmer)+", "+str(self.datum)+", "+str(self.anwesend)
 
-class Add(models.Model):
-    zahl1 = models.IntegerField()
-    zahl2 = models.IntegerField()
-    def rechne(self):
-        return self.zahl1 + self.zahl2
-    def __str__(self):
-        return f"Ergebnis {self.rechne()}"
