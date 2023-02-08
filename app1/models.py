@@ -68,7 +68,7 @@ class TnInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     aktiv = models.BooleanField(default=True)
     def __str__(self):
-        return str(self.user.username)+", "+str(self.zeitpunkt)+", "+self.info
+        return f"{self.tn.name}/{self.zeitpunkt} - {self.info} ({self.user})"
     class Meta:
         verbose_name_plural = "Teilnehmer Infos"
 

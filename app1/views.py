@@ -962,6 +962,8 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
     for tn in teilnehmer:
         anwesenheit = Anwesenheit.objects.filter(
             teilnehmer=tn, datum__date=date_akt)
+        info = TnInfo.objects.filter(tn=tn, zeitpunkt__date=date_akt)
+        print(info)
         liste2 = []
         time_old = False
         for anwesend in anwesenheit:
