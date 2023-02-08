@@ -934,8 +934,6 @@ def anwesenheit_laufend(request, gruppe):
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_comment(request, id, comment, gruppe):
     tn = Teilnehmer.objects.get(id=id)
-    print(tn.name)
-    print(comment)
     comment = TnInfo(tn=tn, info=comment, user=request.user)
     comment.save()
     return redirect("/pr1/anwesenheit/"+str(gruppe))
@@ -963,7 +961,10 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
         anwesenheit = Anwesenheit.objects.filter(
             teilnehmer=tn, datum__date=date_akt)
         info = TnInfo.objects.filter(tn=tn, zeitpunkt__date=date_akt)
-        print(info)
+        comment = ""
+        for text in info:
+            comment += text.info + ", "
+        print(comment)
         liste2 = []
         time_old = False
         for anwesend in anwesenheit:
@@ -985,6 +986,6 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
                 status = "Abwesend"
             liste2.append((anwesend.datum.strftime("%H:%M"),
                           anwesend.anwesend, anwesend.user))
-        liste.append((tn, liste2))
+        liste.append((tn, liste2, comment))
     return render(request, 'app1/ausbildung_auswertung.html', {"h1": "Auswertung Anwesenheit", "forms": forms,
                                                                "liste": liste, "datum": date_akt, "gruppe": gruppe_ds})
