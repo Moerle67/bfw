@@ -962,9 +962,8 @@ def anwesenheit_auswertung_gruppe(request, gruppe):
             teilnehmer=tn, datum__date=date_akt)
         info = TnInfo.objects.filter(tn=tn, zeitpunkt__date=date_akt)
         comment = ""
-        for text in info:
-            comment += text.info + ", "
-        print(comment)
+        for ds in info:
+            comment += ds.info + f"({ds.user}), "
         liste2 = []
         time_old = False
         for anwesend in anwesenheit:
