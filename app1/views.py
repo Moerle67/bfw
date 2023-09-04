@@ -353,6 +353,7 @@ def grpNeu(request):
     message = ""
     if request.method == "GET":
         vname = ""
+        vsprecher=""
     else:
         print(request.POST)
         vname = request.POST['Name']
@@ -372,6 +373,7 @@ def grpNeu(request):
             else:
                 return redirect("/pr1/grp/neu")
     name = FormInput("Name", value=vname)
+    sprecher = FormAuswahl("Sprecher", value=vsprecher)
     btn_import = FormBtn("Import", "import")
     forms = (name,
              "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel, btn_import)
@@ -385,10 +387,12 @@ def grpDetail(request, grp_id):
     if request.method == "GET":
         ds = Gruppe.objects.get(id=str(grp_id))
         vname = ds.name
+        vsprecher = ds.sprecher
     else:
-        print(request.POST)
+        # print(request.POST)
         vname = request.POST['Name']
-
+        print(request.POST['Sprecher'])
+        vsprecher = Teilnehmer.objects.get(id=int(request.POST['Sprecher']))
         if request.POST['button'] == "cancel":
             return redirect("/pr1/tn")
         else:
@@ -399,11 +403,13 @@ def grpDetail(request, grp_id):
                 return redirect("/pr1/grp")
             else:
                 ds.name = vname
+                ds.sprecher = vsprecher
                 ds.save()
                 return redirect("/pr1/grp")
     name = FormInput("Name", value=vname)
+    sprecher = FormAuswahl("Sprecher", Teilnehmer, value=vsprecher)
     area = '<textarea cols="50" rows="10" name="textar">Es war dunkel, feucht und neblig …</textarea>'
-    forms = (name,
+    forms = (name, sprecher,
              "<hr />", FormBtnSave, FormBtnCancel, FormBtnRemove, formLinie, area)
 
     return render(request, 'app1/base_form.html', {'forms': forms, 'h1': "Gruppe bearbeiten", 'message': message})

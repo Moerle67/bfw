@@ -38,9 +38,13 @@ class Raum(models.Model):
 class Gruppe(models.Model):
     name = models.CharField(max_length=50)
     aktiv = models.BooleanField(default=True)
-    raum = models.ForeignKey(Raum, on_delete=models.CASCADE, null=True)
+    raum = models.ForeignKey(Raum, on_delete=models.CASCADE, null=True, blank=True)
+    sprecher = models.ForeignKey('Teilnehmer', verbose_name="Gruppensprecher", on_delete=models.CASCADE, null=True, blank=True, related_name="Gruppensprecher")
     def __str__(self):
-        return self.name+ "("+str(self.id)+")"
+        if self.sprecher != None:
+            return f"{self.name} ({self.sprecher.name}, {self.sprecher.vorname})"
+        else:
+            return f"{self.name}"
     class Meta:
         ordering = ['name']
         verbose_name_plural = "Gruppen"
