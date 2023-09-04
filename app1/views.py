@@ -373,7 +373,7 @@ def grpNeu(request):
             else:
                 return redirect("/pr1/grp/neu")
     name = FormInput("Name", value=vname)
-    sprecher = FormAuswahl("Sprecher", value=vsprecher)
+    # sprecher = FormAuswahl("Sprecher", Teilnehmer,  value=vsprecher)
     btn_import = FormBtn("Import", "import")
     forms = (name,
              "<hr />", FormBtnSave, FormBtnNext, FormBtnCancel, btn_import)
