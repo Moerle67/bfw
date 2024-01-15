@@ -17,13 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from django.views.generic import RedirectView
-from app1 import views
+from kanban import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('pr1/', include("app1.urls")),
-    path('kanban/', include("kanban.urls")),
-    path('', RedirectView.as_view(url='/pr1/')),
-    path('accounts/login/', views.auth),
-
+    path('', views.kanban, name="kanban"),
 ]
