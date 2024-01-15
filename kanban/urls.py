@@ -21,4 +21,5 @@ from kanban import views
 
 urlpatterns = [
     path('', views.kanban, name="kanban"),
+    path('tgbuttons', views.tgbuttons, name="tgbuttons"),
 ]
