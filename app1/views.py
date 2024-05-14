@@ -929,13 +929,19 @@ def anwesenheit_laufend(request, gruppe):
                                 submit=True, label=False)
         form = (gruppe_fm)
         time_old = False
+        number_anwesend = 0
+        number_abwesend = 0
         for tn in teilnehmer:
             satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
             if satz:
                 anwesend = satz.anwesend
+                if anwesend:    #Anwesende zählen
+                    number_anwesend += 1
+                else:
+                    number_abwesend += 1
                 liste.append((tn, anwesend))
         js = ("js/eigenes.js",)
-        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste, "form": form, "js": js})
+        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste, "form": form, "js": js, "anwesend": number_anwesend, "abwesend": number_abwesend})
 
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_comment(request, id, comment, gruppe):
