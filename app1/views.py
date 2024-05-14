@@ -941,7 +941,15 @@ def anwesenheit_laufend(request, gruppe):
                     number_abwesend += 1
                 liste.append((tn, anwesend))
         js = ("js/eigenes.js",)
-        return render(request, 'app1/anwesenheit.html', {"gruppe": gruppe, "teilnehmer": liste, "form": form, "js": js, "anwesend": number_anwesend, "abwesend": number_abwesend})
+        contents = {
+            "gruppe": gruppe, 
+            "teilnehmer": liste, 
+            "form": form, "js": js, 
+            "anwesend": number_anwesend, 
+            "abwesend": number_abwesend,
+            "gesamt": number_abwesend+number_anwesend,
+        }
+        return render(request, 'app1/anwesenheit.html', contents)
 
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_comment(request, id, comment, gruppe):
