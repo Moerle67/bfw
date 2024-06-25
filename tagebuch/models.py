@@ -16,7 +16,7 @@ class Project(models.Model):
     def __str__(self):
         privat = "privat" if self.privat else "beruflich"
         aktiv = "aktiv" if self.aktiv else "inaktiv"
-        return f"{self.name ({privat}/{aktiv})}"
+        return f"{self.name} ({privat}/{aktiv})"
 
     def get_absolute_url(self):
         return reverse("Project_detail", kwargs={"pk": self.pk})
@@ -24,7 +24,7 @@ class Project(models.Model):
 
 
 
-class Eintrag(models.Model):
+class Entry(models.Model):
     task = models.CharField(("Tätigkeit"), max_length=50)
     description = models.TextField(("Beschreibung"), blank= True, null=True)
     begin = models.DateTimeField(("Start "), auto_now=False, auto_now_add=True)
@@ -37,7 +37,7 @@ class Eintrag(models.Model):
         verbose_name_plural = ("Einträge")
 
     def __str__(self):
-        return self.name
+        return f"{self.task}/{self.user} ({self.project}:{self.begin} - {self.end})"
 
     def get_absolute_url(self):
         return reverse("Eintrag_detail", kwargs={"pk": self.pk})
