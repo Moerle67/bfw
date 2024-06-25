@@ -42,6 +42,7 @@ ALLOWED_HOSTS = ['bfwstuttgart.de','127.0.0.1','localhost']
 INSTALLED_APPS = [
     'app1.apps.App1Config',
     'kanban.apps.KanbanConfig',
+    'tagebuch.apps.TagebuchConfig',
     
     'django.contrib.admin',
     'django.contrib.auth',
