@@ -13,10 +13,12 @@
     <input type="hidden" name="gruppe" value="{{gruppe.id}}" />
     {% for zeile in teilnehmer %}
         <div class="form-check form-switch">
-          {% if zeile.1 %}
+          {% if zeile.1 == 1 %}
             <button type="submit" class="btn btn-success" name="button" value="{{zeile.0.id}}">Anwesend</button>
-          {% else %}
+          {% elif zeile.1 == 2  %}
             <button type="submit" class="btn btn-danger" name="button" value="{{zeile.0.id}}">Abwesend</button>
+          {% else %}
+            <button type="submit" class="btn btn-secondary" name="button" value="{{zeile.0.id}}">Unbestimmt</button>          
           {% endif %}
             <button type="button" class"btn btn-outline-primary" onclick="add_comment('Kommentar',{{zeile.0.id}},'{{zeile.0.name}}, {{zeile.0.vorname}}', '{{gruppe}}')">{{zeile.0.name}}, {{zeile.0.vorname}} - {{zeile.0.ausbildung.slug}}</button>
         </div>

@@ -906,21 +906,28 @@ def anwesenheit_start(request, gruppe):
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_laufend(request, gruppe):
     gruppe_ds = Gruppe.objects.get(id=gruppe)
+    # Neue Gruppe angewählt
     if request.method == "POST":
-        if "button" not in request.POST:
+        if "button" not in request.POST:    # Gruppe 
             gruppe = request.POST["Gruppe"]
             return redirect("/pr1/anwesenheit/"+str(gruppe))
         if request.POST["button"] == "weiter":
             return redirect("/pr1/anwesenheit/auswertung/"+str(gruppe))
-        else:
+        else:                               # Button Teilnehmer
             tn = request.POST["button"]
             # print(tn)
             tn = Teilnehmer.objects.get(id=tn)
-            satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
-            anwesend = not satz.anwesend
-            anwesenheit = Anwesenheit(
-                teilnehmer=tn, user=request.user, anwesend=anwesend)
-            anwesenheit.save()
+            satz = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date.today()).last()
+            print(satz)
+            if satz:                        # TN heute schon registriert
+                anwesend = not satz.anwesend
+                anwesenheit = Anwesenheit(
+                    teilnehmer=tn, user=request.user, anwesend=anwesend)
+                anwesenheit.save()
+            else:
+                anwesenheit = Anwesenheit(
+                    teilnehmer=tn, user=request.user, anwesend=False)
+                anwesenheit.save()
             return redirect("/pr1/anwesenheit/"+str(gruppe))
     else:
         liste = []
@@ -932,19 +939,28 @@ def anwesenheit_laufend(request, gruppe):
         number_anwesend = 0
         number_abwesend = 0
         for tn in teilnehmer:
-            satz = Anwesenheit.objects.filter(teilnehmer=tn).last()
-            if satz:
-                anwesend = satz.anwesend
-                if anwesend:    #Anwesende zählen
+            satz = Anwesenheit.objects.filter(teilnehmer=tn, datum__date=date.today()).last()
+            if satz: # Heute schon ein Eintrag?
+                # anwesend = satz.anwesend
+                # Anwesenheit 
+                # 0 - heute noch nicht
+                # 1 - heute anwesend
+                # 2 - heute fehlend
+
+                anwesend = 1 if satz.anwesend else 2
+                if anwesend == 1:    #Anwesende zählen
                     number_anwesend += 1
                 else:
                     number_abwesend += 1
                 liste.append((tn, anwesend))
+            else:
+                liste.append((tn, 0))
         js = ("js/eigenes.js",)
         contents = {
             "gruppe": gruppe, 
             "teilnehmer": liste, 
-            "form": form, "js": js, 
+            "form": form, 
+            "js": js, 
             "anwesend": number_anwesend, 
             "abwesend": number_abwesend,
             "gesamt": number_abwesend+number_anwesend,
