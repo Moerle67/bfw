@@ -35,9 +35,10 @@ class Entry(models.Model):
     class Meta:
         verbose_name = ("Eintrag")
         verbose_name_plural = ("Einträge")
+        ordering = ["-begin"]
 
     def __str__(self):
-        return f"{self.task}/{self.user} ({self.project}:{self.begin} - {self.end})"
+        return f"{self.task}/{self.user} ({self.project}: {self.begin.strftime('%d.%m.%Y %H:%M')} - {self.end.strftime('%H:%M')}"
 
     def get_absolute_url(self):
         return reverse("Eintrag_detail", kwargs={"pk": self.pk})
