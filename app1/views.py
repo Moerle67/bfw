@@ -905,7 +905,10 @@ def anwesenheit_start(request, gruppe):
 
 @permission_required('app1.view_teilnehmer')
 def anwesenheit_laufend(request, gruppe):
-    gruppe_ds = Gruppe.objects.get(id=gruppe)
+    try: 
+        gruppe_ds = Gruppe.objects.get(id=gruppe)
+    except Gruppe.DoesNotExist:
+        gruppe_ds = Gruppe.objects.filter(aktiv=True)[0]
     # Neue Gruppe angewählt
     if request.method == "POST":
         if "button" not in request.POST:    # Gruppe 
