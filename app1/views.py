@@ -975,6 +975,12 @@ def anwesenheit_comment(request, id, comment, gruppe):
     return redirect("/pr1/anwesenheit/"+str(gruppe))
 
 @permission_required('app1.view_teilnehmer')
+def anwesenheit_auswertung_allg(request):
+    dss_gruppe = Gruppe.objects.filter(aktiv=True)
+    id = dss_gruppe[0].id
+    return redirect("/pr1/anwesenheit/auswertung/"+str(id))
+
+@permission_required('app1.view_teilnehmer')
 def anwesenheit_auswertung_gruppe(request, gruppe):
     date_akt = date.today()
     max_lenght = 15

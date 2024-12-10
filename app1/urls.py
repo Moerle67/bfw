@@ -58,6 +58,7 @@ urlpatterns = [
     path('anwesenheit/<int:gruppe>/start', views.anwesenheit_start, name = 'anwesenheit_start'),
     path('anwesenheit/<int:gruppe>', views.anwesenheit_laufend, name = 'anwesenheit_laufend'),
     path('anwesenheit/auswertung/<int:gruppe>', views.anwesenheit_auswertung_gruppe, name = 'anwesenheit_laufend_gruppe'),
+    path('anwesenheit/auswertung', views.anwesenheit_auswertung_allg, name="anwesenheit_auswertung_allg"),
     path('anwesenheit/add_comment/<int:id>/<str:comment>/<int:gruppe>', views.anwesenheit_comment, name = 'anwesenheit_laufend_gruppe'),
 
 ]
