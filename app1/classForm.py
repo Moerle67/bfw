@@ -29,6 +29,20 @@ class FormInput:
         antwort += '>\n'
         return antwort
 
+class FormTextArea:
+    label=""
+    def __init__(self, label, value="", rows=4):
+        self.label = label
+        self.value = value
+        self.rows = str(rows)
+
+    def __str__(self):
+        antwort =  f'<label for="{self.label}">{self.label}</label>\n'   
+        antwort += f'<textarea class="form-control" id="{self.label}" name="{self.label}" rows="{self.rows}">'
+        antwort += self.value
+        antwort += "</textarea>"
+
+        return antwort
 class FormSlider:
     label = ""
     min = 0
